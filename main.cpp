@@ -26,7 +26,12 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
-void dump(); // prints vartable, instable, symboltable
+void dump() {
+    for (const auto & lexeme : lexemes) {
+        cout << symboltable[lexeme] << " ";
+    }
+}
+    // prints vartable, insttable, symboltable
 
 
 // Classes Stmt and Expr
