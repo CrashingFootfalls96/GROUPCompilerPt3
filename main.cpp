@@ -309,16 +309,44 @@ private:
 
     void buildAssign();
 
-    void buildInput();
+    void buildInput() {
+        tokitr++, lexitr++; //move past input
+        tokitr++, lexitr++; //move past lparen
+        // InputStmt* input = new InputStmt(*lexitr);
+        // insttable.push_back(input);
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past rparen
+    }
 
     void buildOutput();
 
     Expr *buildExpr();
 
     // headers for populate methods may not change
-    void populateTokenLexemes(istream &infile);
+    void populateTokenLexemes(istream &infile) {
+        string tok, lex, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            tok = line.substr(0, spacePos);
+            lex = line.substr(spacePos + 1);
 
-    void populateSymbolTable(istream &infile);
+            tokens.push_back(tok);
+            lexemes.push_back(lex);
+        }
+        tokitr = tokens.begin();
+        lexitr = lexemes.begin();
+    }
+
+    void populateSymbolTable(istream &infile) {
+        string id, type, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            id = line.substr(0, spacePos);
+            type = line.substr(spacePos + 1);
+
+            symboltable.insert(make_pair(id, type));
+        }
+    }
 
 public:
     Compiler() {
@@ -327,7 +355,6 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
