@@ -318,10 +318,21 @@ private:
         tokitr++, lexitr++; //move past rparen
     }
 
-    void buildOutput();
+    void buildOutput() {
+        tokitr++, lexitr++; //output
+        tokitr++, lexitr++; //lparen
+        if (symboltable[*lexitr] == "t_integer") {
+            // IntOutStmt* ios = new IntOutStmt(*lexitr);
+            // insttable.push_back(ios);
+        } else if (symboltable[*lexitr] == "t_string") {
+            // StrOutStmt sos = new StrOutStmt(*lexitr);
+            // insttable.push_back(sos);
+        }
+        tokitr++, lexitr++; //var
+        tokitr++, lexitr++; //rparen
+    }
 
     Expr *buildExpr();
-
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile) {
         string tok, lex, line;
@@ -375,7 +386,6 @@ public:
     void run() {
     }
 };
-
 
 int main() {
     ifstream source("data.txt");
