@@ -27,8 +27,14 @@ map<string, int> precMap;
 
 // Runtime Global Methods
 void dump() {
-    for (const auto & lexeme : lexemes) {
-        cout << symboltable[lexeme] << " ";
+    for (const auto & sym : symboltable) {
+        cout << sym.first << " : " << sym.second << endl;
+    }
+    for (const auto & sym : symboltable) {
+        cout << sym.first << " = " << sym.second << endl;
+    }
+    for (int i = 0; i < insttable.size(); ++i) {
+        cout << i << ": " << insttable[i]->toString() << endl;
     }
 }
     // prints vartable, insttable, symboltable
