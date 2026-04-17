@@ -60,7 +60,7 @@ public:
     }
 
     string eval() {
-        return symbolvalues[value];
+        return value;
     }
 
     string toString() {return value; }
@@ -69,17 +69,16 @@ public:
 class StringIDExpr : public StringExpr {
 private:
     string id;  // string variable
-
 public:
     StringIDExpr(string val) {
-        string id = val;
+        id = val;
     }
 
     ~StringIDExpr() {
     }
 
     string eval() {
-        // lookup symbtoltable
+        // lookup symbolvalues
         return symbolvalues[id];
     }
 
@@ -126,6 +125,7 @@ public:
     }
 
     int eval() {
+        return value;
     }
 
     string toString() { return to_string(value); }
@@ -137,12 +137,15 @@ private:
 
 public:
     IntIDExpr(string val) {
+        id = val;
     }
 
     ~IntIDExpr() {
     }
 
     int eval() {
+        string valueStr = symbolvalues[id];
+        return stoi(valueStr);
     }
 
     string toString() { return id; }
