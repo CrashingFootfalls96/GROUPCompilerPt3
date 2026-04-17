@@ -42,3 +42,4 @@
 
 CMakeLists.txt
 cmake-build-debug/CMakeFiles/clion-Debug-log.txt
+.idea/editor.xml
