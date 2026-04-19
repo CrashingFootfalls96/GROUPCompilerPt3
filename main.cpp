@@ -1,7 +1,3 @@
-// Adam Stahly
-// Aron Bartoszek
-// Daniel
-// Nico
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -19,10 +15,10 @@ vector<string> lexemes;
 vector<string> tokens;
 vector<string>::iterator lexitr;
 vector<string>::iterator tokitr;
-map<string, string> symbolvalues; // map of variables and their values
-map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer)
-vector<Stmt *> insttable; // table of instructions
-map<string, int> precMap;
+map<string, string> symbolvalues; // map of variables and their values CREATED IN PT3  DUMP
+map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer) DUMP
+vector<Stmt *> insttable; // table of instructions CREATED IN PT3  DUMP
+map<string, int> precMap; // CREATED IN PT3
 
 
 // Runtime Global Methods
@@ -57,34 +53,36 @@ private:
 
 public:
     StringConstExpr(string val) {
+        value = val;
     }
 
     ~StringConstExpr() {
     }
 
     string eval() {
+        return value;
     }
 
-    string toString() {
-    }
+    string toString() {return value; }
 };
 
 class StringIDExpr : public StringExpr {
 private:
-    string id;
-
+    string id;  // string variable
 public:
     StringIDExpr(string val) {
+        id = val;
     }
 
     ~StringIDExpr() {
     }
 
     string eval() {
+        // lookup symbolvalues
+        return symbolvalues[id];
     }
 
-    string toString() {
-    }
+    string toString() { return id;}
 };
 
 class StringPostFixExpr : public Expr {
@@ -106,6 +104,11 @@ public:
     }
 
     string toString() {
+        string exprConcat = "";
+        for (int i = 0; i < expr.size(); i++) {
+            exprConcat += expr[i] + " " + exprtoks[i];
+        }
+        return exprConcat;
     }
 };
 
@@ -115,16 +118,17 @@ private:
 
 public:
     IntConstExpr(int val) {
+        value = val;
     }
 
     ~IntConstExpr() {
     }
 
     int eval() {
+        return value;
     }
 
-    string toString() {
-    }
+    string toString() { return to_string(value); }
 };
 
 class IntIDExpr : public IntExpr {
@@ -133,16 +137,18 @@ private:
 
 public:
     IntIDExpr(string val) {
+        id = val;
     }
 
     ~IntIDExpr() {
     }
 
     int eval() {
+        string valueStr = symbolvalues[id];
+        return stoi(valueStr);
     }
 
-    string toString() {
-    }
+    string toString() { return id; }
 };
 
 class IntPostFixExpr : public IntExpr {
@@ -162,6 +168,11 @@ public:
     }
 
     string toString() {
+        string stringBuilder = "";
+        for (int i = 0; i < expr.size(); i++) {
+            stringBuilder += expr[i];
+        }
+        return stringBuilder;
     }
 };
 
@@ -311,44 +322,17 @@ private:
 
     void buildAssign();
 
-    void buildInput() {
-        tokitr++, lexitr++; //move past input
-        tokitr++, lexitr++; //move past lparen
-        // InputStmt* input = new InputStmt(*lexitr);
-        // insttable.push_back(input);
-        tokitr++, lexitr++; //move past id
-        tokitr++, lexitr++; //move past rparen
-    }
+    void buildInput();
 
     void buildOutput();
 
-    Expr *buildExpr();
+    Expr *buildExpr() {    // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
 
+    }
     // headers for populate methods may not change
-    void populateTokenLexemes(istream &infile) {
-        string tok, lex, line;
-        while (getline(infile, line)) {
-            int spacePos = line.find(' ');
-            tok = line.substr(0, spacePos);
-            lex = line.substr(spacePos + 1);
+    void populateTokenLexemes(istream &infile);
 
-            tokens.push_back(tok);
-            lexemes.push_back(lex);
-        }
-        tokitr = tokens.begin();
-        lexitr = lexemes.begin();
-    }
-
-    void populateSymbolTable(istream &infile) {
-        string id, type, line;
-        while (getline(infile, line)) {
-            int spacePos = line.find(' ');
-            id = line.substr(0, spacePos);
-            type = line.substr(spacePos + 1);
-
-            symboltable.insert(make_pair(id, type));
-        }
-    }
+    void populateSymbolTable(istream &infile);
 
 public:
     Compiler() {
@@ -357,6 +341,7 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
+
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
