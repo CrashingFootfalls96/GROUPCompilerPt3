@@ -1,0 +1,12 @@
+t_out output
+s_lparen (
+t_string "Enter your age:"
+s_rparen )
+t_input input
+s_lparen (
+t_id userAge
+s_rparen )
+t_out output
+s_lparen (
+t_integer 100
+s_rparen )
