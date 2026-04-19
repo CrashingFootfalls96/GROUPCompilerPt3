@@ -1,0 +1,8 @@
+t_id myAge
+s_assign =
+t_integer 25
+s_semi ;
+t_id myName
+s_assign =
+t_string "Adam"
+s_semi ;

@@ -1,0 +1,6 @@
+num1 t_integer
+num2 t_integer
+result t_integer
+first t_string
+last t_string
+full t_string
