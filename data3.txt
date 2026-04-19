@@ -1,0 +1,8 @@
+t_id highScore
+s_assign =
+t_integer 100
+s_semi ;
+t_out output
+s_lparen (
+t_id score
+s_rparen )

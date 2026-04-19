@@ -37,5 +37,6 @@ s_gt >
 t_id last
 s_rparen )
 t_out output
+s_lparen (
 t_id full
-s_semi ;
+s_rparen )
