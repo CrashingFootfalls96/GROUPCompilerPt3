@@ -199,13 +199,30 @@ private:
     Expr *p_expr;
 
 public:
-    AssignStmt();
+    AssignStmt() {
+        var = "";
+        p_expr = nullptr;
+    }
+    AssignStmt(string inVar, Expr *inExpr) {
+        var = inVar;
+        p_expr = inExpr;
+    }
 
-    ~AssignStmt();
+    ~AssignStmt() {
+        delete p_expr;
+    }
 
-    string toString();
+    string toString() {return var + " = " + p_expr->toString();}
 
-    void execute();
+    void execute() {
+        if (symboltable[var] == "t_integer") {
+            symbolvalues[var] = to_string(((IntExpr *)p_expr)->eval());
+        }
+        else {
+            symbolvalues[var] = ((StringExpr *)p_expr)->eval();
+        }
+        pc++;
+    }
 };
 
 class InputStmt : public Stmt {
@@ -255,13 +272,22 @@ private:
     string var;
 
 public:
-    IDOutStmt();
+    IDOutStmt() {
+        var = "";
+    }
 
-    ~IDOutStmt();
+    IDOutStmt(string inVar) {
+        var = inVar;
+    }
 
-    string toString();
+    ~IDOutStmt() {}
 
-    void execute();
+    string toString() {return "Variable ID: " + var;}
+
+    void execute() { //ints automatically initialized to 0?
+        cout << symbolvalues[var] << endl;
+        pc++;
+    }
 };
 
 class IfStmt : public Stmt {
