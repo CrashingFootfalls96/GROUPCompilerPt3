@@ -1,3 +1,7 @@
+// Adam Stahly
+// Aron Bartoszek
+// Daniel
+// Nico
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -15,10 +19,10 @@ vector<string> lexemes;
 vector<string> tokens;
 vector<string>::iterator lexitr;
 vector<string>::iterator tokitr;
-map<string, string> symbolvalues; // map of variables and their values CREATED IN PT3  DUMP
-map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer) DUMP
-vector<Stmt *> insttable; // table of instructions CREATED IN PT3  DUMP
-map<string, int> precMap; // CREATED IN PT3
+map<string, string> symbolvalues; // map of variables and their values
+map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer)
+vector<Stmt *> insttable; // table of instructions
+map<string, int> precMap;
 
 
 // Runtime Global Methods
@@ -348,17 +352,56 @@ private:
 
     void buildAssign();
 
-    void buildInput();
-
-    void buildOutput();
-
-    Expr *buildExpr() {    // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
-
+    void buildInput() {
+        tokitr++, lexitr++; //move past input
+        tokitr++, lexitr++; //move past lparen
+        // InputStmt* input = new InputStmt(*lexitr);
+        // insttable.push_back(input);
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past rparen
     }
-    // headers for populate methods may not change
-    void populateTokenLexemes(istream &infile);
 
-    void populateSymbolTable(istream &infile);
+    void buildOutput() {
+        tokitr++, lexitr++; //output
+        tokitr++, lexitr++; //lparen
+        if (symboltable[*lexitr] == "t_integer") {
+            // IntOutStmt* ios = new IntOutStmt(*lexitr);
+            // insttable.push_back(ios);
+        } else if (symboltable[*lexitr] == "t_string") {
+            // StrOutStmt sos = new StrOutStmt(*lexitr);
+            // insttable.push_back(sos);
+        }
+        tokitr++, lexitr++; //var
+        tokitr++, lexitr++; //rparen
+    }
+
+    Expr *buildExpr();
+
+    // headers for populate methods may not change
+    void populateTokenLexemes(istream &infile) {
+        string tok, lex, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            tok = line.substr(0, spacePos);
+            lex = line.substr(spacePos + 1);
+
+            tokens.push_back(tok);
+            lexemes.push_back(lex);
+        }
+        tokitr = tokens.begin();
+        lexitr = lexemes.begin();
+    }
+
+    void populateSymbolTable(istream &infile) {
+        string id, type, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            id = line.substr(0, spacePos);
+            type = line.substr(spacePos + 1);
+
+            symboltable.insert(make_pair(id, type));
+        }
+    }
 
 public:
     Compiler() {
@@ -367,6 +410,11 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
+        precMap["+"] = 2;
+        precMap["-"] = 2;
+        precMap["*"] = 1;
+        precMap["/"] = 1;
+        precMap["%"] = 1;
 
         populateTokenLexemes(source);
         populateSymbolTable(symbols);

@@ -43,3 +43,4 @@
 *.xml
 
 CMakeLists.txt
+*.xml
