@@ -26,7 +26,7 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
-void dump(); // prints vartable, instable, symboltable
+// prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
@@ -299,6 +299,8 @@ public:
     void execute();
 };
 
+
+
 class Compiler {
 private:
     void buildStmt();
@@ -370,6 +372,17 @@ public:
     }
 };
 
+void dump() {
+    for (const auto & sym : symboltable) {
+        cout << sym.first << " : " << sym.second << endl;
+    }
+    for (const auto & val : symbolvalues) {
+        cout << val.first << " = " << val.second << endl;
+    }
+    for (int i = 0; i < insttable.size(); i++) {
+        cout << i << ": " << insttable[i]->toString() << endl;
+    }
+}
 
 int main() {
     ifstream source("data.txt");
