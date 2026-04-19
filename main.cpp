@@ -26,18 +26,7 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
-void dump() {
-    for (const auto & sym : symboltable) {
-        cout << sym.first << " : " << sym.second << endl;
-    }
-    for (const auto & sym : symboltable) {
-        cout << sym.first << " = " << sym.second << endl;
-    }
-    for (int i = 0; i < insttable.size(); ++i) {
-        cout << i << ": " << insttable[i]->toString() << endl;
-    }
-}
-    // prints vartable, insttable, symboltable
+// prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
@@ -310,6 +299,8 @@ public:
     void execute();
 };
 
+
+
 class Compiler {
 private:
     void buildStmt();
@@ -320,16 +311,44 @@ private:
 
     void buildAssign();
 
-    void buildInput();
+    void buildInput() {
+        tokitr++, lexitr++; //move past input
+        tokitr++, lexitr++; //move past lparen
+        // InputStmt* input = new InputStmt(*lexitr);
+        // insttable.push_back(input);
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past rparen
+    }
 
     void buildOutput();
 
     Expr *buildExpr();
 
     // headers for populate methods may not change
-    void populateTokenLexemes(istream &infile);
+    void populateTokenLexemes(istream &infile) {
+        string tok, lex, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            tok = line.substr(0, spacePos);
+            lex = line.substr(spacePos + 1);
 
-    void populateSymbolTable(istream &infile);
+            tokens.push_back(tok);
+            lexemes.push_back(lex);
+        }
+        tokitr = tokens.begin();
+        lexitr = lexemes.begin();
+    }
+
+    void populateSymbolTable(istream &infile) {
+        string id, type, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            id = line.substr(0, spacePos);
+            type = line.substr(spacePos + 1);
+
+            symboltable.insert(make_pair(id, type));
+        }
+    }
 
 public:
     Compiler() {
@@ -338,7 +357,6 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
@@ -354,6 +372,17 @@ public:
     }
 };
 
+void dump() {
+    for (const auto & sym : symboltable) {
+        cout << sym.first << " : " << sym.second << endl;
+    }
+    for (const auto & val : symbolvalues) {
+        cout << val.first << " = " << val.second << endl;
+    }
+    for (int i = 0; i < insttable.size(); i++) {
+        cout << i << ": " << insttable[i]->toString() << endl;
+    }
+}
 
 int main() {
     ifstream source("data.txt");
