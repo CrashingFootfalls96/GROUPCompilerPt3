@@ -1,0 +1,23 @@
+t_id age
+s_assign =
+t_integer 22
+s_semi ;
+t_id name
+s_assign =
+t_string "Adam"
+s_semi ;
+t_id greeting
+s_assign =
+t_string "Hello "
+s_plus +
+t_id name
+s_semi ;
+t_if if
+s_lparen (
+t_id age
+s_gt >
+t_integer 20
+s_rparen )
+t_out output
+t_id greeting
+s_semi ;
