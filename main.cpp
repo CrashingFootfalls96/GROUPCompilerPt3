@@ -26,7 +26,7 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
-void dump(); // prints vartable, instable, symboltable
+// prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
@@ -57,34 +57,36 @@ private:
 
 public:
     StringConstExpr(string val) {
+        value = val;
     }
 
     ~StringConstExpr() {
     }
 
     string eval() {
+        return value;
     }
 
-    string toString() {
-    }
+    string toString() {return value; }
 };
 
 class StringIDExpr : public StringExpr {
 private:
-    string id;
-
+    string id;  // string variable
 public:
     StringIDExpr(string val) {
+        id = val;
     }
 
     ~StringIDExpr() {
     }
 
     string eval() {
+        // lookup symbolvalues
+        return symbolvalues[id];
     }
 
-    string toString() {
-    }
+    string toString() { return id;}
 };
 
 class StringPostFixExpr : public Expr {
@@ -106,6 +108,11 @@ public:
     }
 
     string toString() {
+        string exprConcat = "";
+        for (int i = 0; i < expr.size(); i++) {
+            exprConcat += expr[i] + " " + exprtoks[i];
+        }
+        return exprConcat;
     }
 };
 
@@ -115,16 +122,17 @@ private:
 
 public:
     IntConstExpr(int val) {
+        value = val;
     }
 
     ~IntConstExpr() {
     }
 
     int eval() {
+        return value;
     }
 
-    string toString() {
-    }
+    string toString() { return to_string(value); }
 };
 
 class IntIDExpr : public IntExpr {
@@ -133,16 +141,18 @@ private:
 
 public:
     IntIDExpr(string val) {
+        id = val;
     }
 
     ~IntIDExpr() {
     }
 
     int eval() {
+        string valueStr = symbolvalues[id];
+        return stoi(valueStr);
     }
 
-    string toString() {
-    }
+    string toString() { return id; }
 };
 
 class IntPostFixExpr : public IntExpr {
@@ -162,6 +172,11 @@ public:
     }
 
     string toString() {
+        string stringBuilder = "";
+        for (int i = 0; i < expr.size(); i++) {
+            stringBuilder += expr[i];
+        }
+        return stringBuilder;
     }
 };
 
@@ -175,7 +190,7 @@ public:
     }
 
     virtual ~Stmt() {
-    };
+    }
 
     virtual string toString() = 0;
 
@@ -189,11 +204,13 @@ private:
 
 public:
     AssignStmt() {
+        name = "t_assign";
         var = "";
         p_expr = nullptr;
     }
 
     AssignStmt(string inVar, Expr *inExpr) {
+        name = "t_assign";
         var = inVar;
         p_expr = inExpr;
     }
@@ -224,10 +241,12 @@ private:
 
 public:
     InputStmt() {
+        name = "t_input";
         var = "";
     }
 
     InputStmt(string inVar) {
+        name = "t_input";
         var = inVar;
     }
 
@@ -252,10 +271,12 @@ private:
 
 public:
     StrOutStmt() {
+        name = "t_output";
         value = "";
     }
 
     StrOutStmt(string inValue) {
+        name = "t_output";
         value = inValue;
     }
 
@@ -277,10 +298,12 @@ private:
 
 public:
     IntOutStmt() {
+        name = "t_output";
         value = 0;
     }
 
     IntOutStmt(int inValue) {
+        name = "t_output";
         value = inValue;
     }
 
@@ -302,10 +325,12 @@ private:
 
 public:
     IDOutStmt() {
+        name = "t_output";
         var = "";
     }
 
     IDOutStmt(string inVar) {
+        name = "t_output";
         var = inVar;
     }
 
@@ -328,11 +353,13 @@ private:
 
 public:
     IfStmt() {
+        name = "t_if";
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     IfStmt(Expr *inExpr) {
+        name = "t_if";
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -366,11 +393,13 @@ private:
 
 public:
     WhileStmt() {
+        name = "t_while";
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     WhileStmt(Expr *inExpr) {
+        name = "t_while";
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -404,6 +433,7 @@ private:
 
 public:
     GoToStmt() {
+        name = "t_goto";
         target = -1;
     }
 
@@ -422,15 +452,36 @@ public:
     }
 };
 
+
+
 class Compiler {
 private:
-    void buildStmt();
 
-    void buildIf();
+    void buildStmt() {
+        if (*tokitr == "t_if") {return buildIf();}
+        if (*tokitr == "t_while") {return buildWhile();}
+        if (*tokitr == "t_id") {
+            if (peek("s_assign")){return buildAssign();}
+        }
+        if (*tokitr == "t_input") {return buildInput();}
+        if (*tokitr == "t_output") {return buildOutput();}
+    }
+
+    void buildIf() {
+        tokitr++, lexitr++; //move past if
+        tokitr++, lexitr++; //move past lparen
+
+
+    }
 
     void buildWhile();
 
-    void buildAssign();
+    void buildAssign() {
+        string id = *lexitr;
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past assign
+
+    }
 
     void buildInput() {
         tokitr++, lexitr++; //move past input
@@ -441,7 +492,19 @@ private:
         tokitr++, lexitr++; //move past rparen
     }
 
-    void buildOutput();
+    void buildOutput() {
+        tokitr++, lexitr++; //output
+        tokitr++, lexitr++; //lparen
+        if (symboltable[*lexitr] == "t_integer") {
+            // IntOutStmt* ios = new IntOutStmt(*lexitr);
+            // insttable.push_back(ios);
+        } else if (symboltable[*lexitr] == "t_string") {
+            // StrOutStmt sos = new StrOutStmt(*lexitr);
+            // insttable.push_back(sos);
+        }
+        tokitr++, lexitr++; //var
+        tokitr++, lexitr++; //rparen
+    }
 
     Expr *buildExpr();
 
@@ -470,6 +533,15 @@ private:
             symboltable.insert(make_pair(id, type));
         }
     }
+    bool peek(string token) {
+        bool match = false;
+        tokitr++, lexitr++;
+        if (*tokitr == token) {
+            match = true;
+        }
+        tokitr--, lexitr--;
+        return match;
+    }
 
 public:
     Compiler() {
@@ -478,6 +550,16 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
+        precMap["<"] = 3;
+        precMap[">"] = 3;
+        precMap["<="] = 3;
+        precMap[">="] = 3;
+        precMap["+"] = 2;
+        precMap["-"] = 2;
+        precMap["*"] = 1;
+        precMap["/"] = 1;
+        precMap["%"] = 1;
+
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
@@ -485,14 +567,35 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        while (tokitr != tokens.end()) {
+            buildStmt();
+        }
+        //Compiles correctly only when there are no logical errors
+        return true;
     }
 
     // The run method will execute the code in the instruction
     // table.
     void run() {
+        pc = 0;
+        while (pc < insttable.size()) {
+            insttable[pc]->execute();
+            pc++;
+        }
     }
 };
 
+void dump() {
+    for (const auto & sym : symboltable) {
+        cout << sym.first << " " << sym.second << endl;
+    }
+    for (const auto & val : symbolvalues) {
+        cout << val.first << " = " << val.second << endl;
+    }
+    for (int i = 0; i < insttable.size(); i++) {
+        cout << i << ": " << insttable[i]->toString() << endl;
+    }
+}
 
 int main() {
     ifstream source("data.txt");
