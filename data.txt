@@ -18,6 +18,10 @@ t_id age
 s_gt >
 t_integer 20
 s_rparen )
+t_then then
 t_out output
+s_lparen (
 t_id greeting
-s_semi ;
+s_rparen )
+t_end end
+t_if if

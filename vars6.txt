@@ -1,0 +1,3 @@
+dividend t_integer
+divisor t_integer
+remainder t_integer

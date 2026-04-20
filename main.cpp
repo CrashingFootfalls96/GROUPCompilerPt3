@@ -20,10 +20,10 @@ vector<string> lexemes;
 vector<string> tokens;
 vector<string>::iterator lexitr;
 vector<string>::iterator tokitr;
-map<string, string> symbolvalues; // map of variables and their values CREATED IN PT3  DUMP
-map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer) DUMP
-vector<Stmt *> insttable; // table of instructions CREATED IN PT3  DUMP
-map<string, int> precMap; // CREATED IN PT3
+map<string, string> symbolvalues; // map of variables and their values
+map<string, string> symboltable; // map of variables to datatype (i.e. sum t_integer)
+vector<Stmt *> insttable; // table of instructions
+map<string, int> precMap;
 
 
 // Runtime Global Methods
@@ -214,13 +214,34 @@ private:
     Expr *p_expr;
 
 public:
-    AssignStmt();
+    AssignStmt() {
+        var = "";
+        p_expr = nullptr;
+    }
 
-    ~AssignStmt();
+    AssignStmt(string inVar, Expr *inExpr) {
+        var = inVar;
+        p_expr = inExpr;
+    }
 
-    string toString();
+    ~AssignStmt() {
+        delete p_expr;
+    }
 
-    void execute();
+    string toString() {
+        return var + " = " + p_expr->toString();
+    }
+
+    void execute() {
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr) {
+            symbolvalues[var] = to_string(i_expr->eval());
+        }
+        else {
+            symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
+        }
+        pc++;
+    }
 };
 
 class InputStmt : public Stmt {
@@ -228,13 +249,27 @@ private:
     string var;
 
 public:
-    InputStmt();
+    InputStmt() {
+        var = "";
+    }
 
-    ~InputStmt();
+    InputStmt(string inVar) {
+        var = inVar;
+    }
 
-    string toString();
+    ~InputStmt() {}
 
-    void execute();
+    string toString() {
+        return "input(" + var  + ")";
+    }
+
+    void execute() {
+        string input;
+        cout << "input value for variable: " + var << endl;
+        cin >> input;
+        symbolvalues[var] = input;
+        pc++;
+    }
 };
 
 class StrOutStmt : public Stmt {
@@ -242,13 +277,24 @@ private:
     string value;
 
 public:
-    StrOutStmt();
+    StrOutStmt() {
+        value = "";
+    }
 
-    ~StrOutStmt();
+    StrOutStmt(string inValue) {
+        value = inValue;
+    }
 
-    string toString();
+    ~StrOutStmt() {}
 
-    void execute();
+    string toString() {
+        return "output(" + value + ")";
+    }
+
+    void execute() {
+        cout << value << endl;
+        pc++;
+    }
 };
 
 class IntOutStmt : public Stmt {
@@ -256,27 +302,49 @@ private:
     int value;
 
 public:
-    IntOutStmt();
+    IntOutStmt() {
+        value = 0;
+    }
 
-    ~IntOutStmt();
+    IntOutStmt(int inValue) {
+        value = inValue;
+    }
 
-    string toString();
+    ~IntOutStmt() {}
 
-    void execute();
+    string toString() {
+        return "output(" + to_string(value) + ")";
+    }
+
+    void execute() {
+        cout << value << endl;
+        pc++;
+    }
 };
 
-class IDOutStmt : public Stmt {
+class IDOutStmt : public Stmt { //print id value
 private:
     string var;
 
 public:
-    IDOutStmt();
+    IDOutStmt() {
+        var = "";
+    }
 
-    ~IDOutStmt();
+    IDOutStmt(string inVar) {
+        var = inVar;
+    }
 
-    string toString();
+    ~IDOutStmt() {}
 
-    void execute();
+    string toString() {
+        return "output(" + var + ")";
+    }
+
+    void execute() {
+        cout << symbolvalues[var] << endl;
+        pc++;
+    }
 };
 
 class IfStmt : public Stmt {
@@ -285,13 +353,36 @@ private:
     int elsetarget;
 
 public:
-    IfStmt();
+    IfStmt() {
+        p_expr = nullptr;
+        elsetarget = -1;
+    }
 
-    ~IfStmt();
+    IfStmt(Expr *inExpr) {
+        p_expr = inExpr;
+        elsetarget = -1;
+    }
 
-    string toString();
+    ~IfStmt() {
+        delete p_expr;
+    }
 
-    void execute();
+    string toString() {
+        return "if " + p_expr->toString() + "else target: " + to_string(elsetarget);
+    }
+
+    void execute() {
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr && i_expr->eval()) {
+            pc++;
+        }
+        else {
+            pc = elsetarget;
+        }
+    }
+    void setElseTarget(int inTarget) {
+        elsetarget = inTarget;
+    }
 };
 
 class WhileStmt : public Stmt {
@@ -300,13 +391,37 @@ private:
     int elsetarget;
 
 public:
-    WhileStmt();
+    WhileStmt() {
+        p_expr = nullptr;
+        elsetarget = -1;
+    }
 
-    ~WhileStmt();
+    WhileStmt(Expr *inExpr) {
+        p_expr = inExpr;
+        elsetarget = -1;
+    }
 
-    string toString();
+    ~WhileStmt() {
+        delete p_expr;
+    }
 
-    void execute();
+    string toString() {
+        return "while " + p_expr->toString() + "else target: " + to_string(elsetarget);
+    }
+
+    void execute() {
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr && i_expr->eval()) {
+            pc++;
+        }
+        else {
+            pc = elsetarget;
+        }
+    }
+
+    void setElseTarget(int inTarget) {
+        elsetarget = inTarget;
+    }
 };
 
 class GoToStmt : public Stmt {
@@ -314,32 +429,55 @@ private:
     int target;
 
 public:
-    GoToStmt();
+    GoToStmt() {
+        target = -1;
+    }
 
-    ~GoToStmt();
+    ~GoToStmt() {}
 
-    void setTarget();
+    void setTarget(int inTarget) {
+        target = inTarget;
+    }
 
-    string toString();
+    string toString() {
+        return "goto : " + to_string(target);
+    }
 
-    void execute();
+    void execute() {
+        pc = target;
+    }
 };
 
 
 
 class Compiler {
 private:
-    void buildStmt();
 
-    void buildIf();
+    void buildStmt() {
+        if (*tokitr == "t_if") {return buildIf();}
+        if (*tokitr == "t_while") {return buildWhile();}
+        if (*tokitr == "t_id") {
+            if (peek("s_assign")){return buildAssign();}
+        }
+        if (*tokitr == "t_input") {return buildInput();}
+        if (*tokitr == "t_output") {return buildOutput();}
+    }
+
+    void buildIf() {
+        tokitr++, lexitr++; //move past if
+        tokitr++, lexitr++; //move past lparen
+
+
+    }
 
     void buildWhile();
 
-    void buildAssign();
+    void buildAssign() {
+        string id = *lexitr;
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past assign
 
-    void buildInput();
-
-    void buildOutput();
+    }
 
     bool isOperator(string term){
         // helper func
@@ -350,13 +488,13 @@ private:
 
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-        Expr *expr;;
-        stack<string> operStk;
-        vector<string> postFix;
+//         Expr *expr;;
+//         stack<string> operStk;
+//         vector<string> postFix;
 
-        if (symboltable[*lexitr] == "t_string") {
-            postFix.push_back(*lexitr);
-            lexitr++;
+//         if (symboltable[*lexitr] == "t_string") {
+//             postFix.push_back(*lexitr);
+//             lexitr++;
 
             // REWORK SHUNTING ALGORITHM
             // for (int i = 0; i < expr; i++) {
@@ -378,11 +516,65 @@ private:
             // return postFix;
         }
         return postFix;
+    void buildInput() {
+        tokitr++, lexitr++; //move past input
+        tokitr++, lexitr++; //move past lparen
+        // InputStmt* input = new InputStmt(*lexitr);
+        // insttable.push_back(input);
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past rparen
     }
-    // headers for populate methods may not change
-    void populateTokenLexemes(istream &infile);
 
-    void populateSymbolTable(istream &infile);
+    void buildOutput() {
+        tokitr++, lexitr++; //output
+        tokitr++, lexitr++; //lparen
+        if (symboltable[*lexitr] == "t_integer") {
+            // IntOutStmt* ios = new IntOutStmt(*lexitr);
+            // insttable.push_back(ios);
+        } else if (symboltable[*lexitr] == "t_string") {
+            // StrOutStmt sos = new StrOutStmt(*lexitr);
+            // insttable.push_back(sos);
+        }
+        tokitr++, lexitr++; //var
+        tokitr++, lexitr++; //rparen
+    }
+
+    Expr *buildExpr();
+
+    // headers for populate methods may not change
+    void populateTokenLexemes(istream &infile) {
+        string tok, lex, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            tok = line.substr(0, spacePos);
+            lex = line.substr(spacePos + 1);
+
+            tokens.push_back(tok);
+            lexemes.push_back(lex);
+        }
+        tokitr = tokens.begin();
+        lexitr = lexemes.begin();
+    }
+
+    void populateSymbolTable(istream &infile) {
+        string id, type, line;
+        while (getline(infile, line)) {
+            int spacePos = line.find(' ');
+            id = line.substr(0, spacePos);
+            type = line.substr(spacePos + 1);
+
+            symboltable.insert(make_pair(id, type));
+        }
+    }
+    bool peek(string token) {
+        bool match = false;
+        tokitr++, lexitr++;
+        if (*tokitr == token) {
+            match = true;
+        }
+        tokitr--, lexitr--;
+        return match;
+    }
 
 public:
     Compiler() {
@@ -408,17 +600,27 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        while (tokitr != tokens.end()) {
+            buildStmt();
+        }
+        //Compiles correctly only when there are no logical errors
+        return true;
     }
 
     // The run method will execute the code in the instruction
     // table.
     void run() {
+        pc = 0;
+        while (pc < insttable.size()) {
+            insttable[pc]->execute();
+            pc++;
+        }
     }
 };
 
 void dump() {
     for (const auto & sym : symboltable) {
-        cout << sym.first << " : " << sym.second << endl;
+        cout << sym.first << " " << sym.second << endl;
     }
     for (const auto & val : symbolvalues) {
         cout << val.first << " = " << val.second << endl;
