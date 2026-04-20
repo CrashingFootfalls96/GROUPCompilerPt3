@@ -301,13 +301,32 @@ public:
 
 class Compiler {
 private:
-    void buildStmt();
 
-    void buildIf();
+    void buildStmt() {
+        if (*tokitr == "t_if") {return buildIf();}
+        if (*tokitr == "t_while") {return buildWhile();}
+        if (*tokitr == "t_id") {
+            if (peek("s_assign")){return buildAssign();}
+        }
+        if (*tokitr == "t_input") {return buildInput();}
+        if (*tokitr == "t_output") {return buildOutput();}
+    }
+
+    void buildIf() {
+        tokitr++, lexitr++; //move past if
+        tokitr++, lexitr++; //move past lparen
+
+
+    }
 
     void buildWhile();
 
-    void buildAssign();
+    void buildAssign() {
+        string id = *lexitr;
+        tokitr++, lexitr++; //move past id
+        tokitr++, lexitr++; //move past assign
+
+    }
 
     void buildInput() {
         tokitr++, lexitr++; //move past input
@@ -358,6 +377,15 @@ private:
             symboltable.insert(make_pair(id, type));
         }
     }
+    bool peek(string token) {
+        bool match = false;
+        tokitr++, lexitr++;
+        if (*tokitr == token) {
+            match = true;
+        }
+        tokitr--, lexitr--;
+        return match;
+    }
 
 public:
     Compiler() {
@@ -366,6 +394,10 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
+        precMap["<"] = 3;
+        precMap[">"] = 3;
+        precMap["<="] = 3;
+        precMap[">="] = 3;
         precMap["+"] = 2;
         precMap["-"] = 2;
         precMap["*"] = 1;
@@ -379,11 +411,21 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        while (tokitr != tokens.end()) {
+            buildStmt();
+        }
+        //Compiles correctly only when there are no logical errors
+        return true;
     }
 
     // The run method will execute the code in the instruction
     // table.
     void run() {
+        pc = 0;
+        while (pc < insttable.size()) {
+            insttable[pc]->execute();
+            pc++;
+        }
     }
 };
 
