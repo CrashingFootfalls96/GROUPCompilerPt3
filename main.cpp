@@ -195,6 +195,9 @@ public:
     virtual string toString() = 0;
 
     virtual void execute() = 0;
+
+    virtual void setName(string inName){
+    }
 };
 
 class AssignStmt : public Stmt {
@@ -204,13 +207,13 @@ private:
 
 public:
     AssignStmt() {
-        name = "t_assign";
+        setName("t_assign");
         var = "";
         p_expr = nullptr;
     }
 
     AssignStmt(string inVar, Expr *inExpr) {
-        name = "t_assign";
+        setName("t_assign");
         var = inVar;
         p_expr = inExpr;
     }
@@ -241,12 +244,12 @@ private:
 
 public:
     InputStmt() {
-        name = "t_input";
+        setName("t_input");
         var = "";
     }
 
     InputStmt(string inVar) {
-        name = "t_input";
+        setName("t_input");
         var = inVar;
     }
 
@@ -271,12 +274,12 @@ private:
 
 public:
     StrOutStmt() {
-        name = "t_output";
+        setName("t_output");
         value = "";
     }
 
     StrOutStmt(string inValue) {
-        name = "t_output";
+        setName("t_output");
         value = inValue;
     }
 
@@ -298,12 +301,12 @@ private:
 
 public:
     IntOutStmt() {
-        name = "t_output";
+        setName("t_output");
         value = 0;
     }
 
     IntOutStmt(int inValue) {
-        name = "t_output";
+        setName("t_output");
         value = inValue;
     }
 
@@ -325,12 +328,12 @@ private:
 
 public:
     IDOutStmt() {
-        name = "t_output";
+        setName("t_output");
         var = "";
     }
 
     IDOutStmt(string inVar) {
-        name = "t_output";
+        setName("t_output");
         var = inVar;
     }
 
@@ -353,13 +356,13 @@ private:
 
 public:
     IfStmt() {
-        name = "t_if";
+        setName("t_if");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     IfStmt(Expr *inExpr) {
-        name = "t_if";
+        setName("t_if");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -393,13 +396,13 @@ private:
 
 public:
     WhileStmt() {
-        name = "t_while";
+        setName("t_while");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     WhileStmt(Expr *inExpr) {
-        name = "t_while";
+        setName("t_while");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -433,7 +436,7 @@ private:
 
 public:
     GoToStmt() {
-        name = "t_goto";
+        setName("t_goto");
         target = -1;
     }
 
