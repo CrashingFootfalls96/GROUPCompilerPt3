@@ -1,3 +1,11 @@
+t_var var
+t_integer
+t_id myAge
+s_semi ;
+t_string
+t_id myName
+s_semi ;
+t_main main
 t_id myAge
 s_assign =
 t_integer 25
@@ -6,3 +14,4 @@ t_id myName
 s_assign =
 t_string "Adam"
 s_semi ;
+t_end end
