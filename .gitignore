@@ -39,5 +39,8 @@
 
 # debug information files
 *.dwo
+*.iml
+*.xml
 
 CMakeLists.txt
+cmake-build-debug/CMakeFiles/clion-Debug-log.txt
