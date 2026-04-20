@@ -1,3 +1,4 @@
+t_main main
 t_id myAge
 s_assign =
 t_integer 25
@@ -6,3 +7,4 @@ t_id myName
 s_assign =
 t_string "Adam"
 s_semi ;
+t_end end

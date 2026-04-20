@@ -1,12 +1,14 @@
-t_out output
+t_main main
+t_output output
 s_lparen (
-t_string "Enter your age:"
+t_text "Enter your age:"
 s_rparen )
 t_input input
 s_lparen (
 t_id userAge
 s_rparen )
-t_out output
+t_output output
 s_lparen (
 t_integer 100
 s_rparen )
+t_end end

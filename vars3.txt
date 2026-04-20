@@ -1,1 +1,2 @@
-score t_integer
+num t_integer
+zero t_integer

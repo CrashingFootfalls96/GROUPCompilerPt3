@@ -302,7 +302,9 @@ private:
 public:
     IfStmt();
 
-    ~IfStmt();
+    ~IfStmt() {
+        delete p_expr;
+    }
 
     string toString();
 

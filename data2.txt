@@ -1,3 +1,4 @@
+t_main main
 t_id num1
 s_assign =
 t_integer 10
@@ -36,7 +37,11 @@ t_id first
 s_gt >
 t_id last
 s_rparen )
+t_then then
 t_out output
 s_lparen (
 t_id full
 s_rparen )
+t_end end
+t_if if
+t_end end

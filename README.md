@@ -14,5 +14,7 @@ It also verifies that string concatenation can occur with expressions beyond sin
 
 4. data3/vars3
 
-This test has one variable called score. 
+This test has two variables, num and zero. It tests division of zero with integer variables at runtime to see if an error is successfully thrown.
+
+5. 
 

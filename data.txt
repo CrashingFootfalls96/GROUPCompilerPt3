@@ -1,3 +1,4 @@
+t_main main
 t_id age
 s_assign =
 t_integer 22
@@ -18,7 +19,11 @@ t_id age
 s_gt >
 t_integer 20
 s_rparen )
+t_then then
 t_out output
 s_lparen (
 t_id greeting
 s_rparen )
+t_end end
+t_if if
+t_end end
