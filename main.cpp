@@ -371,7 +371,16 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-
+        precMap["<"] = 3;
+        precMap[">"] = 3;
+        precMap["<="] = 3;
+        precMap[">="] = 3;
+        precMap["+"] = 2;
+        precMap["-"] = 2;
+        precMap["*"] = 1;
+        precMap["/"] = 1;
+        precMap["%"] = 1;
+        
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
