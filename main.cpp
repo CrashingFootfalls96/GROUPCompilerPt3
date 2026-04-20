@@ -349,7 +349,7 @@ private:
     }
 
     Expr *buildExpr() {
-        // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
+        // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
         Expr *expr;;
         stack<string> operStk;
         vector<string> postFix;
@@ -358,45 +358,24 @@ private:
             postFix.push_back(*lexitr);
             lexitr++;
 
-
-            for (int i = 0; i < expr; i++) {
-                string element = expr[i];
-                if (!isOperator(element)) {
-                    postFix.push_back(element);
-                } else {
-                    while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
-                        postFix.push_back(operStk.top());
-                        operStk.pop();
-                    }
-                    operStk.push(element);
-                }
-            }
-            while (!operStk.empty()) {
-                postFix.push_back(operStk.top());
-                operStk.pop();
-            }
-            return postFix;
-        }
-
-        }
-
-
-
-        for (int i = 0; i < expr.size(); i++) {
-            string element = expr[i];
-            if (!isOperator(element)) {
-                postFix.push_back(element);
-            } else {
-                while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
-                    postFix.push_back(operStk.top());
-                    operStk.pop();
-                }
-                operStk.push(element);
-            }
-        }
-        while (!operStk.empty()) {
-            postFix.push_back(operStk.top());
-            operStk.pop();
+            // REWORK SHUNTING ALGORITHM
+            // for (int i = 0; i < expr; i++) {
+            //     string element = expr[i];
+            //     if (!isOperator(element)) {
+            //         postFix.push_back(element);
+            //     } else {
+            //         while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
+            //             postFix.push_back(operStk.top());
+            //             operStk.pop();
+            //         }
+            //         operStk.push(element);
+            //     }
+            // }
+            // while (!operStk.empty()) {
+            //     postFix.push_back(operStk.top());
+            //     operStk.pop();
+            // }
+            // return postFix;
         }
         return postFix;
     }
@@ -421,7 +400,7 @@ public:
         precMap["*"] = 1;
         precMap["/"] = 1;
         precMap["%"] = 1;
-        
+
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
     }
