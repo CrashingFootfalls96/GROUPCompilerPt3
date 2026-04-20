@@ -572,7 +572,7 @@ public:
 
 void dump() {
     for (const auto & sym : symboltable) {
-        cout << sym.first << " : " << sym.second << endl;
+        cout << sym.first << " " << sym.second << endl;
     }
     for (const auto & val : symbolvalues) {
         cout << val.first << " = " << val.second << endl;

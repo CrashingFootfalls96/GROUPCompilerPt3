@@ -14,7 +14,16 @@ It also verifies that string concatenation can occur with expressions beyond sin
 
 4. data3/vars3
 
-This test has two variables, num and zero. It tests division of zero with integer variables at runtime to see if an error is successfully thrown.
+This test has two variables, num and zero. 
+It tests division of zero with integer variables at runtime to see if an error is successfully thrown.
 
-5. 
+5. data4/vars4
+
+This test has one variable named countdown. 
+It tests the evaluation of while loops with integer variables.
+
+6. data5/vars5
+
+This test has one variable named userAge.
+It tests that input is handled correctly with integer values, and that errors are thrown based on user input.
 
