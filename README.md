@@ -31,3 +31,10 @@ It tests that input is handled correctly with integer values, and that errors ar
 
 This test has three variables, divisor, dividend, and remainder. 
 It tests that the mod operator is calculated correctly. 
+
+8. data7/vars7
+
+This test has five variables, a, b, lt_flag, gt_flag, ge_flag, and le_flag.
+It tests that the comparison operators are correctly flagged for integers.
+
+9. 
