@@ -27,3 +27,7 @@ It tests the evaluation of while loops with integer variables.
 This test has one variable named userAge.
 It tests that input is handled correctly with integer values, and that errors are thrown based on user input.
 
+7. data6/vars6
+
+This test has three variables, divisor, dividend, and remainder. 
+It tests that the mod operator is calculated correctly. 
