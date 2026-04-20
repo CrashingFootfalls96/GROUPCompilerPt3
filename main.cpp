@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <stack>
 #include <string>
 using namespace std;
 
@@ -95,18 +96,21 @@ public:
     }
 
     StringPostFixExpr(string x, string t) {
+        expr.push_back(x);
+        exprtoks.push_back(t);
     }
 
     ~StringPostFixExpr() {
     }
 
     string eval() {
+        return toString(expr);
     }
 
     string toString() {
         string exprConcat = "";
         for (int i = 0; i < expr.size(); i++) {
-            exprConcat += expr[i] + " " + exprtoks[i];
+            exprConcat += expr[i] + " " + exprtoks[i];  // add out of bounds checking
         }
         return exprConcat;
     }
@@ -326,8 +330,34 @@ private:
 
     void buildOutput();
 
-    Expr *buildExpr() {    // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
+    bool isOperator(string term){
+        // helper func
+        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
+            return true;
+        return false;
+    }
 
+    Expr *buildExpr() {
+        // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
+        stack<string> operStk;
+        vector<string> postFix;
+        for (int i = 0; i < expr.size(); i++) {
+            string element = expr[i];
+            if (!isOperator(element)) {
+                postFix.push_back(element);
+            } else {
+                while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
+                    postFix.push_back(operStk.top());
+                    operStk.pop();
+                }
+                operStk.push(element);
+            }
+        }
+        while (!operStk.empty()) {
+            postFix.push_back(operStk.top());
+            operStk.pop();
+        }
+        return postFix;
     }
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile);
