@@ -27,6 +27,7 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
+// prints vartable, instable, symboltable
 // dump prints vartable, instable, symboltable
 
 
@@ -201,11 +202,14 @@ public:
     }
 
     virtual ~Stmt() {
-    };
+    }
 
     virtual string toString() = 0;
 
     virtual void execute() = 0;
+
+    virtual void setName(string inName){
+    }
 };
 
 class AssignStmt : public Stmt {
@@ -215,11 +219,13 @@ private:
 
 public:
     AssignStmt() {
+        setName("t_assign");
         var = "";
         p_expr = nullptr;
     }
 
     AssignStmt(string inVar, Expr *inExpr) {
+        setName("t_assign");
         var = inVar;
         p_expr = inExpr;
     }
@@ -250,10 +256,12 @@ private:
 
 public:
     InputStmt() {
+        setName("t_input");
         var = "";
     }
 
     InputStmt(string inVar) {
+        setName("t_input");
         var = inVar;
     }
 
@@ -278,10 +286,12 @@ private:
 
 public:
     StrOutStmt() {
+        setName("t_output");
         value = "";
     }
 
     StrOutStmt(string inValue) {
+        setName("t_output");
         value = inValue;
     }
 
@@ -303,10 +313,12 @@ private:
 
 public:
     IntOutStmt() {
+        setName("t_output");
         value = 0;
     }
 
     IntOutStmt(int inValue) {
+        setName("t_output");
         value = inValue;
     }
 
@@ -328,10 +340,12 @@ private:
 
 public:
     IDOutStmt() {
+        setName("t_output");
         var = "";
     }
 
     IDOutStmt(string inVar) {
+        setName("t_output");
         var = inVar;
     }
 
@@ -354,11 +368,13 @@ private:
 
 public:
     IfStmt() {
+        setName("t_if");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     IfStmt(Expr *inExpr) {
+        setName("t_if");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -392,11 +408,13 @@ private:
 
 public:
     WhileStmt() {
+        setName("t_while");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     WhileStmt(Expr *inExpr) {
+        setName("t_while");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -430,6 +448,7 @@ private:
 
 public:
     GoToStmt() {
+        setName("t_goto");
         target = -1;
     }
 
