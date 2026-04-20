@@ -1,3 +1,8 @@
+t_var var
+t_integer integer
+t_id countdown
+s_semi ;
+t_main main
 t_id countdown
 s_assign =
 t_integer 3
@@ -30,3 +35,4 @@ t_integer 999
 s_semi ;
 t_end end
 t_if if
+t_end end

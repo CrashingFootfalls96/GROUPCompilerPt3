@@ -37,4 +37,4 @@ It tests that the mod operator is calculated correctly.
 This test has five variables, a, b, lt_flag, gt_flag, ge_flag, and le_flag.
 It tests that the comparison operators are correctly flagged for integers.
 
-9. 
+9. data

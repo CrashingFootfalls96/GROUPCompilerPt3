@@ -1,3 +1,8 @@
+t_var var
+t_integer integer
+t_id userAge
+s_semi ;
+t_main main
 t_output output
 s_lparen (
 t_text "Enter your age: "
@@ -10,3 +15,4 @@ t_output output
 s_lparen (
 t_integer 100
 s_rparen )
+t_end end

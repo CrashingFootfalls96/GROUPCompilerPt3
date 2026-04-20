@@ -1,3 +1,14 @@
+t_var var
+t_integer
+t_id dividend
+s_comma ,
+t_id divisor
+s_comma ,
+t_id divisor
+s_comma ,
+t_id remainder
+s_semi ;
+t_main main
 t_id dividend
 s_assign =
 t_integer 17
@@ -16,3 +27,4 @@ t_output output
 s_lparen (
 t_id remainder
 s_rparen )
+t_end end

@@ -1,3 +1,18 @@
+t_var var
+t_integer integer
+t_id a
+s_comma ,
+t_id b
+s_comma ,
+t_id lt_flag
+s_comma ,
+t_id gt_flag
+s_comma ,
+t_id le_flag
+s_comma ,
+t_id ge_flag
+s_semi ;
+t_main main
 t_id a
 s_assign =
 t_integer
@@ -58,3 +73,4 @@ t_integer 1
 s_semi ;
 t_end end
 t_if if
+t_end end
