@@ -315,17 +315,34 @@ private:
     void buildIf() {
         tokitr++, lexitr++; //move past if
         tokitr++, lexitr++; //move past lparen
-
-
+        int curPc = pc;
+        // IfStmt* istmt = new IfStmt(curPc, buildExpr());
+        // insttable.push_back(istmt);
+        tokitr++, lexitr++; //move past rparen
+        while (*tokitr != "t_end") {
+            if (*tokitr == "t_else") {
+                // insttable[curPc] = new IfStmt(pc + 1, buildExpr());
+            }
+            buildStmt();
+        }
     }
 
-    void buildWhile();
+    void buildWhile() {
+        tokitr++, lexitr++; //move past while
+        tokitr++, lexitr++; //move past lparen
+        int curPc = pc;
+        // WhileStmt* wstmt = new WhileStmt(curPc, buildExpr());
+        // insttable.push_back(wstmt);
+        tokitr++, lexitr++; //move past rparen
+        while (*tokitr != "t_end") {
+            buildStmt();
+        }
+    }
 
     void buildAssign() {
         string id = *lexitr;
-        tokitr++, lexitr++; //move past id
-        tokitr++, lexitr++; //move past assign
-
+        // AssignStmt* astmt = new AssignStmt(id, buildExpr());
+        // insttable.push_back(astmt);
     }
 
     void buildInput() {
@@ -388,21 +405,18 @@ private:
     }
 
 public:
-    Compiler() {
-    }
+    Compiler() {}
 
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-        precMap["<"] = 3;
-        precMap[">"] = 3;
-        precMap["<="] = 3;
-        precMap[">="] = 3;
         precMap["+"] = 2;
         precMap["-"] = 2;
         precMap["*"] = 1;
         precMap["/"] = 1;
         precMap["%"] = 1;
+        precMap["<"] = 0;
+        precMap[">"] = 0;
 
         populateTokenLexemes(source);
         populateSymbolTable(symbols);
@@ -411,6 +425,9 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        if (*tokitr != "t_main") {
+            tokitr++, lexitr++;
+        }
         while (tokitr != tokens.end()) {
             buildStmt();
         }
