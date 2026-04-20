@@ -1,3 +1,7 @@
+// Aron Bartoszek
+// Adam Stahly
+// Daniel McCarthy
+// Nico Ruiz
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -96,6 +100,7 @@ public:
     }
 
     StringPostFixExpr(string x, string t) {
+        // check this
         expr.push_back(x);
         exprtoks.push_back(t);
     }
@@ -104,7 +109,7 @@ public:
     }
 
     string eval() {
-        return toString(expr);
+
     }
 
     string toString() {
@@ -169,6 +174,12 @@ public:
     }
 
     int eval() {
+        stack<string> operandStk;
+        for (int i = 0; i < expr.size; i++) {
+            string element = expr[i];
+            if (isdigit(expr[i]))
+        }
+
     }
 
     string toString() {
@@ -339,8 +350,38 @@ private:
 
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack and import class
+        Expr *expr;;
         stack<string> operStk;
         vector<string> postFix;
+
+        if (symboltable[*lexitr] == "t_string") {
+            postFix.push_back(*lexitr);
+            lexitr++;
+
+
+            for (int i = 0; i < expr; i++) {
+                string element = expr[i];
+                if (!isOperator(element)) {
+                    postFix.push_back(element);
+                } else {
+                    while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
+                        postFix.push_back(operStk.top());
+                        operStk.pop();
+                    }
+                    operStk.push(element);
+                }
+            }
+            while (!operStk.empty()) {
+                postFix.push_back(operStk.top());
+                operStk.pop();
+            }
+            return postFix;
+        }
+
+        }
+
+
+
         for (int i = 0; i < expr.size(); i++) {
             string element = expr[i];
             if (!isOperator(element)) {
