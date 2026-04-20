@@ -192,6 +192,7 @@ public:
         var = "";
         p_expr = nullptr;
     }
+
     AssignStmt(string inVar, Expr *inExpr) {
         var = inVar;
         p_expr = inExpr;
@@ -201,14 +202,17 @@ public:
         delete p_expr;
     }
 
-    string toString() {return var + " = " + p_expr->toString();}
+    string toString() {
+        return var + " = " + p_expr->toString();
+    }
 
     void execute() {
-        if (symboltable[var] == "t_integer") {
-            symbolvalues[var] = to_string(((IntExpr *)p_expr)->eval());
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr) {
+            symbolvalues[var] = to_string(i_expr->eval());
         }
         else {
-            symbolvalues[var] = ((StringExpr *)p_expr)->eval();
+            symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
         }
         pc++;
     }
@@ -219,13 +223,27 @@ private:
     string var;
 
 public:
-    InputStmt();
+    InputStmt() {
+        var = "";
+    }
 
-    ~InputStmt();
+    InputStmt(string inVar) {
+        var = inVar;
+    }
 
-    string toString();
+    ~InputStmt() {}
 
-    void execute();
+    string toString() {
+        return "input(" + var  + ")";
+    }
+
+    void execute() {
+        string input;
+        cout << "input value for variable: " + var << endl;
+        cin >> input;
+        symbolvalues[var] = input;
+        pc++;
+    }
 };
 
 class StrOutStmt : public Stmt {
@@ -233,13 +251,24 @@ private:
     string value;
 
 public:
-    StrOutStmt();
+    StrOutStmt() {
+        value = "";
+    }
 
-    ~StrOutStmt();
+    StrOutStmt(string inValue) {
+        value = inValue;
+    }
 
-    string toString();
+    ~StrOutStmt() {}
 
-    void execute();
+    string toString() {
+        return "output(" + value + ")";
+    }
+
+    void execute() {
+        cout << value << endl;
+        pc++;
+    }
 };
 
 class IntOutStmt : public Stmt {
@@ -247,16 +276,27 @@ private:
     int value;
 
 public:
-    IntOutStmt();
+    IntOutStmt() {
+        value = 0;
+    }
 
-    ~IntOutStmt();
+    IntOutStmt(int inValue) {
+        value = inValue;
+    }
 
-    string toString();
+    ~IntOutStmt() {}
 
-    void execute();
+    string toString() {
+        return "output(" + to_string(value) + ")";
+    }
+
+    void execute() {
+        cout << value << endl;
+        pc++;
+    }
 };
 
-class IDOutStmt : public Stmt {
+class IDOutStmt : public Stmt { //print id value
 private:
     string var;
 
@@ -271,9 +311,11 @@ public:
 
     ~IDOutStmt() {}
 
-    string toString() {return "Variable ID: " + var;}
+    string toString() {
+        return "output(" + var + ")";
+    }
 
-    void execute() { //ints automatically initialized to 0?
+    void execute() {
         cout << symbolvalues[var] << endl;
         pc++;
     }
@@ -285,13 +327,36 @@ private:
     int elsetarget;
 
 public:
-    IfStmt();
+    IfStmt() {
+        p_expr = nullptr;
+        elsetarget = -1;
+    }
 
-    ~IfStmt();
+    IfStmt(Expr *inExpr) {
+        p_expr = inExpr;
+        elsetarget = -1;
+    }
 
-    string toString();
+    ~IfStmt() {
+        delete p_expr;
+    }
 
-    void execute();
+    string toString() {
+        return "if " + p_expr->toString() + "else target: " + to_string(elsetarget);
+    }
+
+    void execute() {
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr && i_expr->eval()) {
+            pc++;
+        }
+        else {
+            pc = elsetarget;
+        }
+    }
+    void setElseTarget(int inTarget) {
+        elsetarget = inTarget;
+    }
 };
 
 class WhileStmt : public Stmt {
@@ -300,13 +365,37 @@ private:
     int elsetarget;
 
 public:
-    WhileStmt();
+    WhileStmt() {
+        p_expr = nullptr;
+        elsetarget = -1;
+    }
 
-    ~WhileStmt();
+    WhileStmt(Expr *inExpr) {
+        p_expr = inExpr;
+        elsetarget = -1;
+    }
 
-    string toString();
+    ~WhileStmt() {
+        delete p_expr;
+    }
 
-    void execute();
+    string toString() {
+        return "while " + p_expr->toString() + "else target: " + to_string(elsetarget);
+    }
+
+    void execute() {
+        IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
+        if (i_expr && i_expr->eval()) {
+            pc++;
+        }
+        else {
+            pc = elsetarget;
+        }
+    }
+
+    void setElseTarget(int inTarget) {
+        elsetarget = inTarget;
+    }
 };
 
 class GoToStmt : public Stmt {
@@ -314,15 +403,23 @@ private:
     int target;
 
 public:
-    GoToStmt();
+    GoToStmt() {
+        target = -1;
+    }
 
-    ~GoToStmt();
+    ~GoToStmt() {}
 
-    void setTarget();
+    void setTarget(int inTarget) {
+        target = inTarget;
+    }
 
-    string toString();
+    string toString() {
+        return "goto : " + to_string(target);
+    }
 
-    void execute();
+    void execute() {
+        pc = target;
+    }
 };
 
 class Compiler {
