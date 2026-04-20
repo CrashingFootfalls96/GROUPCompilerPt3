@@ -1,11 +1,12 @@
-// Adam Stahly
 // Aron Bartoszek
-// Daniel
-// Nico
+// Adam Stahly
+// Daniel McCarthy
+// Nico Ruiz
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <map>
+#include <stack>
 #include <string>
 using namespace std;
 
@@ -26,7 +27,7 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
-// prints vartable, instable, symboltable
+// dump prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
@@ -99,18 +100,22 @@ public:
     }
 
     StringPostFixExpr(string x, string t) {
+        // check this
+        expr.push_back(x);
+        exprtoks.push_back(t);
     }
 
     ~StringPostFixExpr() {
     }
 
     string eval() {
+
     }
 
     string toString() {
         string exprConcat = "";
         for (int i = 0; i < expr.size(); i++) {
-            exprConcat += expr[i] + " " + exprtoks[i];
+            exprConcat += expr[i] + " " + exprtoks[i];  // add out of bounds checking
         }
         return exprConcat;
     }
@@ -169,6 +174,12 @@ public:
     }
 
     int eval() {
+        stack<string> operandStk;
+        for (int i = 0; i < expr.size; i++) {
+            string element = expr[i];
+            if (isdigit(expr[i]))
+        }
+
     }
 
     string toString() {
@@ -468,6 +479,43 @@ private:
 
     }
 
+    bool isOperator(string term){
+        // helper func
+        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
+            return true;
+        return false;
+    }
+
+    Expr *buildExpr() {
+        // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
+//         Expr *expr;;
+//         stack<string> operStk;
+//         vector<string> postFix;
+
+//         if (symboltable[*lexitr] == "t_string") {
+//             postFix.push_back(*lexitr);
+//             lexitr++;
+
+            // REWORK SHUNTING ALGORITHM
+            // for (int i = 0; i < expr; i++) {
+            //     string element = expr[i];
+            //     if (!isOperator(element)) {
+            //         postFix.push_back(element);
+            //     } else {
+            //         while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
+            //             postFix.push_back(operStk.top());
+            //             operStk.pop();
+            //         }
+            //         operStk.push(element);
+            //     }
+            // }
+            // while (!operStk.empty()) {
+            //     postFix.push_back(operStk.top());
+            //     operStk.pop();
+            // }
+            // return postFix;
+        }
+        return postFix;
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
