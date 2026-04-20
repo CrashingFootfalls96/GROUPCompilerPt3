@@ -23,7 +23,7 @@ map<string, int> precMap; // CREATED IN PT3
 
 
 // Runtime Global Methods
-// prints vartable, instable, symboltable
+// dump prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
