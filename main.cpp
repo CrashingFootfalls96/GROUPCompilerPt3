@@ -8,6 +8,7 @@
 #include <map>
 #include <stack>
 #include <string>
+#include <bits/locale_facets_nonio.h>
 using namespace std;
 
 // You will need these forward references.
@@ -32,6 +33,7 @@ map<string, int> precMap;
 
 // Classes Stmt and Expr
 // You are allowed to add methods if needed. You should NOT need to add member variables.
+
 
 class Expr {
     // expressions are evaluated!
@@ -109,7 +111,9 @@ public:
     }
 
     string eval() {
-
+        // look through vector of string parts
+        // if a part is an ID, look it up on symbolvalues
+        // concatenate
     }
 
     string toString() {
@@ -154,6 +158,7 @@ public:
 
     int eval() {
         string valueStr = symbolvalues[id];
+        if (valueStr.empty()) return 0;
         return stoi(valueStr);
     }
 
@@ -173,12 +178,19 @@ public:
     ~IntPostFixExpr() {
     }
 
+
     int eval() {
-        stack<string> operandStk;
-        for (int i = 0; i < expr.size; i++) {
-            string element = expr[i];
-            if (isdigit(expr[i]))
+        stack<int> valueStk;
+        for (int i=0; i<expr.size(); i++){
+            if (isOperator(expr[i])){
+                int b = valueStk.top(); valueStk.pop();
+                int a = valueStk.top(); valueStk.pop();
+                valueStk.push(applyOper(a, b, postFix[i]));
+            }
+            else
+                valueStk.push(stoi(postFix[i]));
         }
+        return valueStk.top();
 
     }
 
@@ -479,13 +491,6 @@ private:
 
     }
 
-    bool isOperator(string term){
-        // helper func
-        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
-            return true;
-        return false;
-    }
-
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
 //         Expr *expr;;
@@ -514,8 +519,10 @@ private:
             //     operStk.pop();
             // }
             // return postFix;
-        }
+    }
         return postFix;
+
+
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
@@ -628,6 +635,30 @@ void dump() {
     for (int i = 0; i < insttable.size(); i++) {
         cout << i << ": " << insttable[i]->toString() << endl;
     }
+}
+
+bool isOperator(string term){
+    // helper func
+    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%" ||
+        term == "==" || term == ">" || term == "<" || term == ">=" || term == "<=" || term == "!=") {
+        return true;
+    }
+    return false;
+}
+
+int applyOper(int a, int b, string oper) {
+    if (oper == "+") return a + b;
+    if (oper == "-") return a - b;
+    if (oper == "*") return a * b;
+    if (oper == "/") return a / b;
+    if (oper == "%") return a % b;
+    if (oper == "==") return a == b;
+    if (oper == "!=") return a != b;
+    if (oper == "<=") return a <= b;
+    if (oper == ">=") return a >= b;
+    if (oper == ">") return a > b;
+    if (oper == "<") return a < b;
+    return 0;
 }
 
 int main() {
