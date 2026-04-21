@@ -37,4 +37,17 @@ It tests that the mod operator is calculated correctly.
 This test has five variables, a, b, lt_flag, gt_flag, ge_flag, and le_flag.
 It tests that the comparison operators are correctly flagged for integers.
 
-9. data
+9. data8/vars8
+
+This test has four variables, val1, val2, ne_flag, eq_flag. 
+It tests the not equals and equals operator for integers.
+
+10. data9/vars9
+
+This test has 3 string variables and 5 flags.
+It tests all relational operators with strings.
+
+11. data10/vars10
+
+This test has two variables, i and target_found.
+It tests that a if statement executes in a while loop.
