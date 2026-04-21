@@ -54,6 +54,30 @@ public:
     virtual int eval() = 0;
 };
 
+bool isOperator(string term){
+    // helper func
+    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%" ||
+        term == "==" || term == ">" || term == "<" || term == ">=" || term == "<=" || term == "!=") {
+        return true;
+        }
+    return false;
+}
+
+int applyOper(int a, int b, string oper) {
+    if (oper == "+") return a + b;
+    if (oper == "-") return a - b;
+    if (oper == "*") return a * b;
+    if (oper == "/") return a / b;
+    if (oper == "%") return a % b;
+    if (oper == "==") return a == b;
+    if (oper == "!=") return a != b;
+    if (oper == "<=") return a <= b;
+    if (oper == ">=") return a >= b;
+    if (oper == ">") return a > b;
+    if (oper == "<") return a < b;
+    return 0;
+}
+
 class StringConstExpr : public StringExpr {
 private:
     string value;
@@ -178,17 +202,19 @@ public:
     ~IntPostFixExpr() {
     }
 
-
     int eval() {
         stack<int> valueStk;
-        for (int i=0; i<expr.size(); i++){
-            if (isOperator(expr[i])){
+
+        for (int i=0; i < expr.size(); i++){
+            string term = expr[i];
+
+            if (isOperator(term)) {
                 int b = valueStk.top(); valueStk.pop();
                 int a = valueStk.top(); valueStk.pop();
-                valueStk.push(applyOper(a, b, postFix[i]));
+                valueStk.push(applyOper(a, b, term));
+            } else {
+                
             }
-            else
-                valueStk.push(stoi(postFix[i]));
         }
         return valueStk.top();
 
@@ -196,9 +222,7 @@ public:
 
     string toString() {
         string stringBuilder = "";
-        for (int i = 0; i < expr.size(); i++) {
-            stringBuilder += expr[i];
-        }
+        for (const string& s : expr) stringBuilder += s + " ";
         return stringBuilder;
     }
 };
@@ -518,9 +542,8 @@ private:
             //     postFix.push_back(operStk.top());
             //     operStk.pop();
             // }
-            // return postFix;
-    }
         return postFix;
+    }
 
 
     void buildInput() {
@@ -546,7 +569,6 @@ private:
         tokitr++, lexitr++; //rparen
     }
 
-    Expr *buildExpr();
 
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile) {
@@ -635,30 +657,6 @@ void dump() {
     for (int i = 0; i < insttable.size(); i++) {
         cout << i << ": " << insttable[i]->toString() << endl;
     }
-}
-
-bool isOperator(string term){
-    // helper func
-    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%" ||
-        term == "==" || term == ">" || term == "<" || term == ">=" || term == "<=" || term == "!=") {
-        return true;
-    }
-    return false;
-}
-
-int applyOper(int a, int b, string oper) {
-    if (oper == "+") return a + b;
-    if (oper == "-") return a - b;
-    if (oper == "*") return a * b;
-    if (oper == "/") return a / b;
-    if (oper == "%") return a % b;
-    if (oper == "==") return a == b;
-    if (oper == "!=") return a != b;
-    if (oper == "<=") return a <= b;
-    if (oper == ">=") return a >= b;
-    if (oper == ">") return a > b;
-    if (oper == "<") return a < b;
-    return 0;
 }
 
 int main() {
