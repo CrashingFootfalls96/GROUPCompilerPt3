@@ -60,6 +60,22 @@ bool isOperator(string term){
     return false;
 }
 
+int applyOper(int a, int b, string oper){
+    if (oper == "*") return a * b;
+    if (oper == "/") return a / b;
+    if (oper == "%") return a % b;
+    if (oper == "+") return a + b;
+    if (oper == "-") return a - b;
+    if (oper == "<") return a < b;
+    if (oper == ">") return a > b;
+    if (oper == "<=") return a <= b;
+    if (oper == ">=") return a >= b;
+    if (oper == "==") return a == b;
+    if (oper == "!=") return a != b;
+    // process a and b according to the value of oper
+    // and return result
+}
+
 class StringConstExpr : public StringExpr {
 private:
     string value;
@@ -104,6 +120,10 @@ private:
     vector<string> exprtoks;
 
 public:
+    void addTerm(string term) {
+
+    }
+
     StringPostFixExpr() {
     }
 
