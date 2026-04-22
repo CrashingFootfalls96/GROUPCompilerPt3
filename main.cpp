@@ -117,7 +117,29 @@ public:
     }
 
     string eval() {
+        stack<string> operandStk;
 
+        for (const string& token : expr) {
+            if (!isOperator(token)) {
+                if (symboltable.count(token)) {
+                    operandStk.push(symbolvalues[token]);
+                } else {
+                    operandStk.push(token);
+                }
+            } else {
+                if (operandStk.size() >= 2) {
+                    string rhs = operandStk.top(); operandStk.pop();
+                    string lhs = operandStk.top(); operandStk.pop();
+
+                    operandStk.push(lhs + rhs);
+                }
+            }
+        }
+        string result = "";
+        if (!operandStk.empty()) {
+            result = operandStk.top();
+        }
+        return result;
     }
 
     string toString() {
@@ -182,12 +204,13 @@ public:
     }
 
     int eval() {
-        stack<string> operandStk;
+        stack<string> operatorStk;
+        int finalValue = 0;
         for (auto i : expr) {
-            string element = i;
-            if !isOperator
+            if (!isOperator(i)) {
+                operatorStk
+            }
         }
-
     }
 
     string toString() {
