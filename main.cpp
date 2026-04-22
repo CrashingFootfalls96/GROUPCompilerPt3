@@ -517,13 +517,10 @@ private:
 
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-         Expr *expr;;
-         stack<string> operStk;
-         vector<string> postFix;
+        Expr *expr;;
+        stack<string> operStk;
 
-         if (symboltable[*lexitr] == "t_string") {
-             postFix.push_back(*lexitr);
-             lexitr++;
+        if (symboltable[*lexitr] == "t_string") {
 
             // REWORK SHUNTING ALGORITHM
             // for (int i = 0; i < expr; i++) {
@@ -542,7 +539,8 @@ private:
             //     postFix.push_back(operStk.top());
             //     operStk.pop();
             // }
-        return postFix;
+            return expr;
+        }
     }
 
 
