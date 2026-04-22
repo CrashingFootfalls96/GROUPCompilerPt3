@@ -61,3 +61,19 @@ It tests that empty and non empty strings return true and that null pointer retu
 
 This test has two variables, uninit_int and uninit_str. 
 This tests that the values of uninitialized integers and strings output 0 and "" respectively. 
+
+14. data13/vars13
+
+This test has two variables, user_input and match_found. 
+It tests that a user can enter text into the compiler and that there entered text can be used in a logical expression. 
+
+15. data14/vars14
+
+This test has five variables, a, b, c, d, and success.
+It tests that the compiler can handle a nested if statements with the use of and & or.
+
+16. data15/vars15
+
+This test has five variables, a, b, c, d, and fail_check.
+It test that and & or expressions in if statements fail correctly.
+
