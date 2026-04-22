@@ -139,7 +139,7 @@ public:
     ~StringPostFixExpr() {
     }
 
-    string eval() {
+    string *eval() {
         stack<string> operandStk;
 
         for (const string& token : expr) {
