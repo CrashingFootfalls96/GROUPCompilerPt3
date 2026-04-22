@@ -572,8 +572,8 @@ private:
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
-        // InputStmt* input = new InputStmt(*lexitr);
-        // insttable.push_back(input);
+        InputStmt* input = new InputStmt(*lexitr);
+        insttable.push_back(input);
         tokitr++, lexitr++; //move past id
         tokitr++, lexitr++; //move past rparen
     }
@@ -582,11 +582,11 @@ private:
         tokitr++, lexitr++; //output
         tokitr++, lexitr++; //lparen
         if (symboltable[*lexitr] == "t_integer") {
-            // IntOutStmt* ios = new IntOutStmt(*lexitr);
-            // insttable.push_back(ios);
+            IntOutStmt* ios = new IntOutStmt(stoi(*lexitr));
+            insttable.push_back(ios);
         } else if (symboltable[*lexitr] == "t_string") {
-            // StrOutStmt sos = new StrOutStmt(*lexitr);
-            // insttable.push_back(sos);
+            StrOutStmt* sos = new StrOutStmt(*lexitr);
+            insttable.push_back(sos);
         }
         tokitr++, lexitr++; //var
         tokitr++, lexitr++; //rparen
