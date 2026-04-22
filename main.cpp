@@ -244,7 +244,13 @@ public:
             symbolvalues[var] = to_string(i_expr->eval());
         }
         else {
-            symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
+            StringPostFixExpr *spf_expr = dynamic_cast<StringPostFixExpr *>(p_expr);
+            if (spf_expr) {
+                symbolvalues[var] = *(spf_expr->eval());
+            }
+            else {
+                symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
+            }
         }
         pc++;
     }
