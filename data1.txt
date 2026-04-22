@@ -1,17 +1,17 @@
 t_var var
-t_integer
+t_integer integer
 t_id myAge
 s_semi ;
-t_string
+t_string string
 t_id myName
 s_semi ;
 t_main main
 t_id myAge
 s_assign =
-t_integer 25
+t_number 25
 s_semi ;
 t_id myName
 s_assign =
-t_string "Adam"
+t_text "Adam"
 s_semi ;
 t_end end

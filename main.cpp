@@ -297,7 +297,13 @@ public:
             symbolvalues[var] = to_string(i_expr->eval());
         }
         else {
-            symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
+            StringPostFixExpr *spf_expr = dynamic_cast<StringPostFixExpr *>(p_expr);
+            if (spf_expr) {
+                symbolvalues[var] = *(spf_expr->eval());
+            }
+            else {
+                symbolvalues[var] = dynamic_cast<StringExpr *>(p_expr)->eval();
+            }
         }
         pc++;
     }
@@ -536,19 +542,55 @@ private:
     }
 
     void buildIf() {
+        int ifIdx = pc;
         tokitr++, lexitr++; //move past if
         tokitr++, lexitr++; //move past lparen
-
-
+        IfStmt* istmt = new IfStmt(buildExpr());
+        insttable.push_back(istmt);
+        tokitr++, lexitr++; //move past rparen
+        tokitr++, lexitr++; //move past then
+        while (*tokitr != "t_end" || *tokitr != "t_else") {
+            buildStmt();
+        }
+        if (*tokitr == "t_else") {
+            GoToStmt* gtstmt = new GoToStmt();
+            insttable.push_back(gtstmt);
+            istmt->setElseTarget(pc);
+            tokitr++, lexitr++; // skip else
+            while (*tokitr != "t_end") {
+                buildStmt();
+            }
+            gtstmt->setTarget(insttable.size());
+        } else {
+            istmt->setElseTarget(insttable.size());
+        }
+        tokitr++, lexitr++; //skip end
+        tokitr++, lexitr++; //skip if
     }
 
-    void buildWhile();
+    void buildWhile() {
+        tokitr++, lexitr++; //move past while
+        tokitr++, lexitr++; //move past lparen
+        int whileIdx = pc;
+        WhileStmt* wstmt = new WhileStmt(buildExpr());
+        insttable.push_back(wstmt);
+        tokitr++, lexitr++; //move past rparen
+        tokitr++, lexitr++; // move past loop
+        while (*tokitr != "t_end") {
+            buildStmt();
+        }
+        wstmt->setElseTarget(insttable.size());
+        GoToStmt* gtstmt = new GoToStmt();
+        gtstmt->setTarget(whileIdx);
+        insttable.push_back(gtstmt);
+        tokitr++, lexitr++; //move past end
+        tokitr++, lexitr++; //move past loop
+    }
 
     void buildAssign() {
         string id = *lexitr;
-        tokitr++, lexitr++; //move past id
-        tokitr++, lexitr++; //move past assign
-
+        AssignStmt* asstmt = new AssignStmt(id, buildExpr());
+        tokitr++, lexitr++; //skip semi
     }
 
     Expr *buildExpr() {
@@ -603,8 +645,8 @@ private:
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
-        // InputStmt* input = new InputStmt(*lexitr);
-        // insttable.push_back(input);
+        InputStmt* input = new InputStmt(*lexitr);
+        insttable.push_back(input);
         tokitr++, lexitr++; //move past id
         tokitr++, lexitr++; //move past rparen
     }
@@ -613,11 +655,11 @@ private:
         tokitr++, lexitr++; //output
         tokitr++, lexitr++; //lparen
         if (symboltable[*lexitr] == "t_integer") {
-            // IntOutStmt* ios = new IntOutStmt(*lexitr);
-            // insttable.push_back(ios);
+            IntOutStmt* ios = new IntOutStmt(stoi(*lexitr));
+            insttable.push_back(ios);
         } else if (symboltable[*lexitr] == "t_string") {
-            // StrOutStmt sos = new StrOutStmt(*lexitr);
-            // insttable.push_back(sos);
+            StrOutStmt* sos = new StrOutStmt(*lexitr);
+            insttable.push_back(sos);
         }
         tokitr++, lexitr++; //var
         tokitr++, lexitr++; //rparen
@@ -665,10 +707,12 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-        precMap["<"] = 3;
-        precMap[">"] = 3;
+        precMap["and"] = 3;
+        precMap["or"] = 3;
         precMap["<="] = 3;
         precMap[">="] = 3;
+        precMap[">"] = 3;
+        precMap["<"] = 3;
         precMap["+"] = 2;
         precMap["-"] = 2;
         precMap["*"] = 1;
@@ -682,6 +726,10 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        while (*tokitr != "t_main") {
+            tokitr++, lexitr++; //pass all vars before main
+        }
+        tokitr++, lexitr++; //pass main
         while (tokitr != tokens.end()) {
             buildStmt();
         }
@@ -695,7 +743,6 @@ public:
         pc = 0;
         while (pc < insttable.size()) {
             insttable[pc]->execute();
-            pc++;
         }
     }
 };

@@ -7,11 +7,11 @@ s_semi ;
 t_main main
 t_id num
 s_assign =
-t_integer 10
+t_number 10
 s_semi ;
 t_id zero
 s_assign =
-t_integer 0
+t_number 0
 s_semi ;
 t_id num
 s_assign =

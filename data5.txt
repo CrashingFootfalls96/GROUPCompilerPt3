@@ -13,6 +13,6 @@ t_id userAge
 s_rparen )
 t_output output
 s_lparen (
-t_integer 100
+t_number 100
 s_rparen )
 t_end end
