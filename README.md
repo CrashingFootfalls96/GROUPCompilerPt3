@@ -75,5 +75,5 @@ It tests that the compiler can handle a nested if statements with the use of and
 16. data15/vars15
 
 This test has five variables, a, b, c, d, and fail_check.
-It test that and & or expressions in if statements fail correctly.
+It tests that and & or expressions in if statements fail correctly.
 
