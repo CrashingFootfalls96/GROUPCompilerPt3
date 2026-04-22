@@ -51,3 +51,8 @@ It tests all relational operators with strings.
 
 This test has two variables, i and target_found.
 It tests that a if statement executes in a while loop.
+
+12. data11/vars11
+
+This test has 3 variables that act as flags.
+It tests that empty and non empty strings return true and that null pointer return false. 
