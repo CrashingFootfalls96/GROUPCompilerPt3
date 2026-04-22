@@ -41,6 +41,8 @@ public:
 
     virtual ~Expr() {
     }
+
+    void addTerm(const vector<string>::iterator::value_type & lexitr, const vector<string>::iterator::value_type & tokitr);
 };
 
 class StringExpr : public Expr {
@@ -52,6 +54,29 @@ class IntExpr : public Expr {
 public:
     virtual int eval() = 0;
 };
+
+bool isOperator(string term){
+    // helper func
+    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
+        return true;
+    return false;
+}
+
+int applyOper(int a, int b, string oper){
+    if (oper == "*") return a * b;
+    if (oper == "/") return a / b;
+    if (oper == "%") return a % b;
+    if (oper == "+") return a + b;
+    if (oper == "-") return a - b;
+    if (oper == "<") return a < b;
+    if (oper == ">") return a > b;
+    if (oper == "<=") return a <= b;
+    if (oper == ">=") return a >= b;
+    if (oper == "==") return a == b;
+    if (oper == "!=") return a != b;
+    // process a and b according to the value of oper
+    // and return result
+}
 
 class StringConstExpr : public StringExpr {
 private:
@@ -97,6 +122,11 @@ private:
     vector<string> exprtoks;
 
 public:
+    void addTerm(string term, string tok) {
+        expr.push_back(term);
+        exprtoks.push_back(tok);
+    }
+
     StringPostFixExpr() {
     }
 
@@ -109,14 +139,36 @@ public:
     ~StringPostFixExpr() {
     }
 
-    string eval() {
+    string *eval() {
+        stack<string> operandStk;
 
+        for (const string& token : expr) {
+            if (!isOperator(token)) {
+                if (symboltable.contains(token)) {
+                    operandStk.push(symbolvalues[token]);
+                } else {
+                    operandStk.push(token);
+                }
+            } else {
+                if (operandStk.size() >= 2) {
+                    string rhs = operandStk.top(); operandStk.pop();
+                    string lhs = operandStk.top(); operandStk.pop();
+
+                    operandStk.push(lhs + rhs);
+                }
+            }
+        }
+        string result = "";
+        if (!operandStk.empty()) {
+            result = operandStk.top();
+        }
+        return result;
     }
 
     string toString() {
         string exprConcat = "";
         for (int i = 0; i < expr.size(); i++) {
-            exprConcat += expr[i] + " " + exprtoks[i];  // add out of bounds checking
+            exprConcat += expr[i] + " " + exprtoks[i];
         }
         return exprConcat;
     }
@@ -175,10 +227,12 @@ public:
     }
 
     int eval() {
-        stack<string> operandStk;
-        for (int i = 0; i < expr.size; i++) {
-            string element = expr[i];
-            if (isdigit(expr[i]))
+        stack<string> operatorStk;
+        int finalValue = 0;
+        for (auto i : expr) {
+            if (!isOperator(i)) {
+                operatorStk
+            }
         }
     }
 
@@ -539,42 +593,55 @@ private:
         tokitr++, lexitr++; //skip semi
     }
 
-    bool isOperator(string term){
-        // helper func
-        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
-            return true;
-        return false;
-    }
-
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-         Expr *expr;;
-         stack<string> operStk;
-         vector<string> postFix;
+        Expr *expr;
+        stack<string> operStk;
 
-//         if (symboltable[*lexitr] == "t_string") {
-//             postFix.push_back(*lexitr);
-//             lexitr++;
-
-            // REWORK SHUNTING ALGORITHM
-            // for (int i = 0; i < expr; i++) {
-            //     string element = expr[i];
-            //     if (!isOperator(element)) {
-            //         postFix.push_back(element);
-            //     } else {
-            //         while (!operStk.empty() && precMap[operStk.top()] <= precMap[element]) {
-            //             postFix.push_back(operStk.top());
-            //             operStk.pop();
-            //         }
-            //         operStk.push(element);
-            //     }
-            // }
-            // while (!operStk.empty()) {
-            //     postFix.push_back(operStk.top());
-            //     operStk.pop();
-            // }
-            return expr;
+        tokitr++, lexitr++;
+        if (peek("s_semi") || peek("s_rparen")) {
+            if (*tokitr == "t_number") {
+                expr = new IntConstExpr(stoi(*lexitr));
+            } else if (*tokitr == "t_text") {
+                expr = new StringConstExpr(*lexitr);
+            } else if (*tokitr == "t_id" && symboltable[*tokitr] == "t_integer") {
+                expr = new IntIDExpr(*lexitr);
+            } else {
+                expr = new StringIDExpr(*lexitr);
+            }
+        } else {
+            if (*tokitr == "t_text" || (*tokitr == "t_id" && symboltable[*tokitr] == "t_string")) {
+                StringPostFixExpr *expr = new StringPostFixExpr();
+                while (*tokitr != "s_semi" || *tokitr != "s_rparen") {
+                    if (!isOperator(*lexitr)) {
+                        expr->addTerm(*lexitr, *tokitr);
+                        tokitr++, lexitr++;
+                    } else {
+                        while (!operStk.empty() && precMap[operStk.top()] <= precMap[*lexitr]) {
+                            expr->addTerm(operStk.top(), *tokitr);
+                            operStk.pop();
+                            tokitr++, lexitr++;
+                        }
+                        operStk.push(*lexitr);
+                        tokitr++, lexitr++;
+                    }
+                }
+                while (!operStk.empty()) {
+                    expr->addTerm(operStk.top(), *tokitr);
+                    operStk.pop();
+                }
+            } else {
+                IntPostFixExpr *expr = new IntPostFixExpr();
+                while (*tokitr != "s_semi" || *tokitr != "s_rparen") {
+                    if (!isOperator(*lexitr)) {
+                        expr->addTerm(*lexitr, *tokitr);
+                    }
+                }
+            }
         }
+            return expr;
+    }
+
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
