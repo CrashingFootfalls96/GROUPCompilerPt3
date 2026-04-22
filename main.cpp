@@ -485,11 +485,31 @@ private:
     void buildIf() {
         tokitr++, lexitr++; //move past if
         tokitr++, lexitr++; //move past lparen
+        int curPc = pc;
+        IfStmt* istmt = new IfStmt(buildExpr());
 
+        insttable.push_back(istmt);
+        tokitr++, lexitr++; //move past rparen
+        tokitr++, lexitr++; //move past then
+        while (*tokitr != "t_end") {
+            if (*tokitr == "t_else") {
 
+            }
+            buildStmt();
+        }
     }
 
-    void buildWhile();
+    void buildWhile() {
+        tokitr++, lexitr++; //move past while
+        tokitr++, lexitr++; //move past lparen
+        int curPc = pc;
+        // WhileStmt* wstmt = new WhileStmt(curPc, buildExpr());
+        // insttable.push_back(wstmt);
+        tokitr++, lexitr++; //move past rparen
+        while (*tokitr != "t_end") {
+            buildStmt();
+        }
+    }
 
     void buildAssign() {
         string id = *lexitr;
