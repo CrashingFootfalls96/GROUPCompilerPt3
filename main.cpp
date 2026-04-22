@@ -180,7 +180,6 @@ public:
             string element = expr[i];
             if (isdigit(expr[i]))
         }
-
     }
 
     string toString() {
@@ -483,39 +482,55 @@ private:
     }
 
     void buildIf() {
+        int ifIdx = pc;
         tokitr++, lexitr++; //move past if
         tokitr++, lexitr++; //move past lparen
-        int curPc = pc;
         IfStmt* istmt = new IfStmt(buildExpr());
-
         insttable.push_back(istmt);
         tokitr++, lexitr++; //move past rparen
         tokitr++, lexitr++; //move past then
-        while (*tokitr != "t_end") {
-            if (*tokitr == "t_else") {
-
-            }
+        while (*tokitr != "t_end" || *tokitr != "t_else") {
             buildStmt();
         }
+        if (*tokitr == "t_else") {
+            GoToStmt* gtstmt = new GoToStmt();
+            insttable.push_back(gtstmt);
+            istmt->setElseTarget(pc);
+            tokitr++, lexitr++; // skip else
+            while (*tokitr != "t_end") {
+                buildStmt();
+            }
+            gtstmt->setTarget(insttable.size());
+        } else {
+            istmt->setElseTarget(insttable.size());
+        }
+        tokitr++, lexitr++; //skip end
+        tokitr++, lexitr++; //skip if
     }
 
     void buildWhile() {
         tokitr++, lexitr++; //move past while
         tokitr++, lexitr++; //move past lparen
-        int curPc = pc;
-        // WhileStmt* wstmt = new WhileStmt(curPc, buildExpr());
-        // insttable.push_back(wstmt);
+        int whileIdx = pc;
+        WhileStmt* wstmt = new WhileStmt(buildExpr());
+        insttable.push_back(wstmt);
         tokitr++, lexitr++; //move past rparen
+        tokitr++, lexitr++; // move past loop
         while (*tokitr != "t_end") {
             buildStmt();
         }
+        wstmt->setElseTarget(insttable.size());
+        GoToStmt* gtstmt = new GoToStmt();
+        gtstmt->setTarget(whileIdx);
+        insttable.push_back(gtstmt);
+        tokitr++, lexitr++; //move past end
+        tokitr++, lexitr++; //move past loop
     }
 
     void buildAssign() {
         string id = *lexitr;
-        tokitr++, lexitr++; //move past id
-        tokitr++, lexitr++; //move past assign
-
+        AssignStmt* asstmt = new AssignStmt(id, buildExpr());
+        tokitr++, lexitr++; //skip semi
     }
 
     bool isOperator(string term){
@@ -577,8 +592,6 @@ private:
         tokitr++, lexitr++; //rparen
     }
 
-    Expr *buildExpr();
-
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile) {
         string tok, lex, line;
@@ -621,10 +634,12 @@ public:
     // headers may not change
     Compiler(istream &source, istream &symbols) {
         // build precMap - include logical, relational, arithmetic operators
-        precMap["<"] = 3;
-        precMap[">"] = 3;
+        precMap["and"] = 3;
+        precMap["or"] = 3;
         precMap["<="] = 3;
         precMap[">="] = 3;
+        precMap[">"] = 3;
+        precMap["<"] = 3;
         precMap["+"] = 2;
         precMap["-"] = 2;
         precMap["*"] = 1;
@@ -638,6 +653,10 @@ public:
     // The compile method is responsible for getting the instruction
     // table built.  It will call the appropriate build methods.
     bool compile() {
+        while (*tokitr != "t_main") {
+            tokitr++, lexitr++; //pass all vars before main
+        }
+        tokitr++, lexitr++; //pass main
         while (tokitr != tokens.end()) {
             buildStmt();
         }
@@ -651,7 +670,6 @@ public:
         pc = 0;
         while (pc < insttable.size()) {
             insttable[pc]->execute();
-            pc++;
         }
     }
 };
