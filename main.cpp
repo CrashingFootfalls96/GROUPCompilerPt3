@@ -121,7 +121,7 @@ public:
 
         for (const string& token : expr) {
             if (!isOperator(token)) {
-                if (symboltable.count(token)) {
+                if (symboltable.contains(token)) {
                     operandStk.push(symbolvalues[token]);
                 } else {
                     operandStk.push(token);
@@ -145,7 +145,7 @@ public:
     string toString() {
         string exprConcat = "";
         for (int i = 0; i < expr.size(); i++) {
-            exprConcat += expr[i] + " " + exprtoks[i];  // add out of bounds checking
+            exprConcat += expr[i] + " " + exprtoks[i];
         }
         return exprConcat;
     }
@@ -530,14 +530,18 @@ private:
 
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-        Expr *expr;;
+        Expr *expr;
         stack<string> operStk;
 
         if (peek("s_semi") || peek("s_rparen")) {
-            if (symboltable[*tokitr] == "t_integer") {
-                expr = new IntConstExpr(*lexitr);
-            } else if (symboltable[*tokitr] == "t_string") {
+            if (*tokitr == "t_number") {
+                expr = new IntConstExpr(stoi(*lexitr));
+            } else if (*tokitr == "t_text") {
                 expr = new StringConstExpr(*lexitr);
+            } else if (*tokitr == "t_id" && symboltable[*tokitr] == "t_integer") {
+                expr = new IntIDExpr(*lexitr);
+            } else {
+                expr = new StringIDExpr(*lexitr);
             }
         }
 
