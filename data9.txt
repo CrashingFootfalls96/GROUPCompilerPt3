@@ -1,10 +1,12 @@
 t_var var
+t_string string
 t_id s1
 s_comma ,
 t_id s2
 s_comma ,
 t_id s3
-s_comma ,
+s_semi ;
+t_integer integer
 t_id eq_f
 s_comma ,
 t_id ne_f
@@ -19,13 +21,16 @@ t_id ge_f
 s_semi ;
 t_main main
 t_id s1
-s_assign = t_text "apple"
+s_assign =
+t_text "apple"
 s_semi ;
 t_id s2
-s_assign = t_text "banana"
+s_assign =
+t_text "banana"
 s_semi ;
 t_id s3
-s_assign = t_text "apple"
+s_assign =
+t_text "apple"
 s_semi ;
 t_if if
 s_lparen (
@@ -36,7 +41,7 @@ s_rparen )
 t_then then
 t_id eq_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -49,7 +54,7 @@ s_rparen )
 t_then then
 t_id ne_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -62,7 +67,7 @@ s_rparen )
 t_then then
 t_id lt_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -75,7 +80,7 @@ s_rparen )
 t_then then
 t_id gt_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -88,7 +93,7 @@ s_rparen )
 t_then then
 t_id le_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -101,7 +106,7 @@ s_rparen )
 t_then then
 t_id ge_f
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if

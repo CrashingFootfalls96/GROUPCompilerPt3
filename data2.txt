@@ -16,11 +16,11 @@ s_semi ;
 t_main main
 t_id num1
 s_assign =
-t_integer 10
+t_number 10
 s_semi ;
 t_id num2
 s_assign =
-t_integer 5
+t_number 5
 s_semi ;
 t_id result
 s_assign =
@@ -28,21 +28,21 @@ t_id num1
 s_mult *
 t_id num2
 s_plus +
-t_integer 9
+t_number 9
 s_semi ;
 t_id first
 s_assign =
-t_string "Adam"
+t_text "Adam"
 s_semi ;
 t_id last
 s_assign =
-t_string "Stahly"
+t_text "Stahly"
 s_semi ;
 t_id full
 s_assign =
 t_id first
 s_plus +
-t_string " "
+t_text " "
 s_plus +
 t_id last
 s_semi ;

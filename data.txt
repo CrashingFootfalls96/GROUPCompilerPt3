@@ -10,15 +10,15 @@ s_semi ;
 t_main main
 t_id age
 s_assign =
-t_integer 22
+t_number 22
 s_semi ;
 t_id name
 s_assign =
-t_string "Adam"
+t_text "Adam"
 s_semi ;
 t_id greeting
 s_assign =
-t_string "Hello "
+t_text "Hello "
 s_plus +
 t_id name
 s_semi ;
@@ -26,7 +26,7 @@ t_if if
 s_lparen (
 t_id age
 s_gt >
-t_integer 20
+t_number 20
 s_rparen )
 t_then then
 t_out output

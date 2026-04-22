@@ -15,11 +15,11 @@ s_semi ;
 t_main main
 t_id a
 s_assign =
-t_integer
-10 s_semi ;
+t_number 10
+s_semi ;
 t_id b
 s_assign =
-t_integer 20
+t_number 20
 s_semi ;
 t_if if
 s_lparen (
@@ -30,7 +30,7 @@ s_rparen )
 t_then then
 t_id lt_flag
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -43,7 +43,7 @@ s_rparen )
 t_then then
 t_id gt_flag
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -56,7 +56,7 @@ s_rparen )
 t_then then
 t_id le_flag
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
@@ -69,7 +69,7 @@ s_rparen )
 t_then then
 t_id ge_flag
 s_assign =
-t_integer 1
+t_number 1
 s_semi ;
 t_end end
 t_if if
