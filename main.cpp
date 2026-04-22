@@ -521,6 +521,8 @@ private:
         stack<string> operStk;
 
         if (symboltable[*lexitr] == "t_string") {
+            
+        }
 
             // REWORK SHUNTING ALGORITHM
             // for (int i = 0; i < expr; i++) {
