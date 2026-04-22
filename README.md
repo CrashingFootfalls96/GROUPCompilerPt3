@@ -56,3 +56,8 @@ It tests that a if statement executes in a while loop.
 
 This test has 3 variables that act as flags.
 It tests that empty and non empty strings return true and that null pointer return false. 
+
+13. data12/vars12
+
+This test has two variables, uninit_int and uninit_str. 
+This tests that the values of uninitialized integers and strings output 0 and "" respectively. 
