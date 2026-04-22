@@ -53,6 +53,13 @@ public:
     virtual int eval() = 0;
 };
 
+bool isOperator(string term){
+    // helper func
+    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
+        return true;
+    return false;
+}
+
 class StringConstExpr : public StringExpr {
 private:
     string value;
@@ -176,9 +183,9 @@ public:
 
     int eval() {
         stack<string> operandStk;
-        for (int i = 0; i < expr.size; i++) {
-            string element = expr[i];
-            if (isdigit(expr[i]))
+        for (auto i : expr) {
+            string element = i;
+            if !isOperator
         }
 
     }
@@ -498,22 +505,19 @@ private:
 
     }
 
-    bool isOperator(string term){
-        // helper func
-        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
-            return true;
-        return false;
-    }
-
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-         Expr *expr;;
-         stack<string> operStk;
-         vector<string> postFix;
+        Expr *expr;;
+        stack<string> operStk;
 
-//         if (symboltable[*lexitr] == "t_string") {
-//             postFix.push_back(*lexitr);
-//             lexitr++;
+        if (peek("s_semi") || peek("s_rparen")) {
+            if (symboltable[*tokitr] == "t_integer") {
+                expr = new IntConstExpr(*lexitr);
+            } else if (symboltable[*tokitr] == "t_string") {
+                expr = new StringConstExpr(*lexitr);
+            }
+        }
+
 
             // REWORK SHUNTING ALGORITHM
             // for (int i = 0; i < expr; i++) {
@@ -533,7 +537,7 @@ private:
             //     operStk.pop();
             // }
             return expr;
-        }
+    }
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
@@ -556,8 +560,6 @@ private:
         tokitr++, lexitr++; //var
         tokitr++, lexitr++; //rparen
     }
-
-    Expr *buildExpr();
 
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile) {
