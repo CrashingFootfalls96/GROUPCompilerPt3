@@ -1,3 +1,10 @@
+t_var var
+t_integer integer
+t_id num
+s_comma ,
+t_id zero
+s_semi ;
+t_main main
 t_id num
 s_assign =
 t_integer 10
@@ -16,3 +23,4 @@ t_out output
 s_lparen (
 t_id num
 s_rparen )
+t_end end

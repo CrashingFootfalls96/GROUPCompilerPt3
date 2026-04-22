@@ -8,7 +8,6 @@
 #include <map>
 #include <stack>
 #include <string>
-#include <bits/locale_facets_nonio.h>
 using namespace std;
 
 // You will need these forward references.
@@ -28,12 +27,12 @@ map<string, int> precMap;
 
 
 // Runtime Global Methods
+// prints vartable, instable, symboltable
 // dump prints vartable, instable, symboltable
 
 
 // Classes Stmt and Expr
 // You are allowed to add methods if needed. You should NOT need to add member variables.
-
 
 class Expr {
     // expressions are evaluated!
@@ -53,30 +52,6 @@ class IntExpr : public Expr {
 public:
     virtual int eval() = 0;
 };
-
-bool isOperator(string term){
-    // helper func
-    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%" ||
-        term == "==" || term == ">" || term == "<" || term == ">=" || term == "<=" || term == "!=") {
-        return true;
-        }
-    return false;
-}
-
-int applyOper(int a, int b, string oper) {
-    if (oper == "+") return a + b;
-    if (oper == "-") return a - b;
-    if (oper == "*") return a * b;
-    if (oper == "/") return a / b;
-    if (oper == "%") return a % b;
-    if (oper == "==") return a == b;
-    if (oper == "!=") return a != b;
-    if (oper == "<=") return a <= b;
-    if (oper == ">=") return a >= b;
-    if (oper == ">") return a > b;
-    if (oper == "<") return a < b;
-    return 0;
-}
 
 class StringConstExpr : public StringExpr {
 private:
@@ -135,9 +110,7 @@ public:
     }
 
     string eval() {
-        // look through vector of string parts
-        // if a part is an ID, look it up on symbolvalues
-        // concatenate
+
     }
 
     string toString() {
@@ -182,7 +155,6 @@ public:
 
     int eval() {
         string valueStr = symbolvalues[id];
-        if (valueStr.empty()) return 0;
         return stoi(valueStr);
     }
 
@@ -203,26 +175,19 @@ public:
     }
 
     int eval() {
-        stack<int> valueStk;
-
-        for (int i=0; i < expr.size(); i++){
-            string term = expr[i];
-
-            if (isOperator(term)) {
-                int b = valueStk.top(); valueStk.pop();
-                int a = valueStk.top(); valueStk.pop();
-                valueStk.push(applyOper(a, b, term));
-            } else {
-                
-            }
+        stack<string> operandStk;
+        for (int i = 0; i < expr.size; i++) {
+            string element = expr[i];
+            if (isdigit(expr[i]))
         }
-        return valueStk.top();
 
     }
 
     string toString() {
         string stringBuilder = "";
-        for (const string& s : expr) stringBuilder += s + " ";
+        for (int i = 0; i < expr.size(); i++) {
+            stringBuilder += expr[i];
+        }
         return stringBuilder;
     }
 };
@@ -237,11 +202,14 @@ public:
     }
 
     virtual ~Stmt() {
-    };
+    }
 
     virtual string toString() = 0;
 
     virtual void execute() = 0;
+
+    virtual void setName(string inName){
+    }
 };
 
 class AssignStmt : public Stmt {
@@ -251,11 +219,13 @@ private:
 
 public:
     AssignStmt() {
+        setName("t_assign");
         var = "";
         p_expr = nullptr;
     }
 
     AssignStmt(string inVar, Expr *inExpr) {
+        setName("t_assign");
         var = inVar;
         p_expr = inExpr;
     }
@@ -286,10 +256,12 @@ private:
 
 public:
     InputStmt() {
+        setName("t_input");
         var = "";
     }
 
     InputStmt(string inVar) {
+        setName("t_input");
         var = inVar;
     }
 
@@ -314,10 +286,12 @@ private:
 
 public:
     StrOutStmt() {
+        setName("t_output");
         value = "";
     }
 
     StrOutStmt(string inValue) {
+        setName("t_output");
         value = inValue;
     }
 
@@ -339,10 +313,12 @@ private:
 
 public:
     IntOutStmt() {
+        setName("t_output");
         value = 0;
     }
 
     IntOutStmt(int inValue) {
+        setName("t_output");
         value = inValue;
     }
 
@@ -364,10 +340,12 @@ private:
 
 public:
     IDOutStmt() {
+        setName("t_output");
         var = "";
     }
 
     IDOutStmt(string inVar) {
+        setName("t_output");
         var = inVar;
     }
 
@@ -390,11 +368,13 @@ private:
 
 public:
     IfStmt() {
+        setName("t_if");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     IfStmt(Expr *inExpr) {
+        setName("t_if");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -428,11 +408,13 @@ private:
 
 public:
     WhileStmt() {
+        setName("t_while");
         p_expr = nullptr;
         elsetarget = -1;
     }
 
     WhileStmt(Expr *inExpr) {
+        setName("t_while");
         p_expr = inExpr;
         elsetarget = -1;
     }
@@ -466,6 +448,7 @@ private:
 
 public:
     GoToStmt() {
+        setName("t_goto");
         target = -1;
     }
 
@@ -515,14 +498,22 @@ private:
 
     }
 
+    bool isOperator(string term){
+        // helper func
+        if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
+            return true;
+        return false;
+    }
+
     Expr *buildExpr() {
         // ARON - shunting algorithm, uses stacks, can create local variable stack, helper methods, and import classes
-        Expr *expr;;
-        stack<string> operStk;
+         Expr *expr;;
+         stack<string> operStk;
+         vector<string> postFix;
 
-        if (symboltable[*lexitr] == "t_string") {
-            
-        }
+//         if (symboltable[*lexitr] == "t_string") {
+//             postFix.push_back(*lexitr);
+//             lexitr++;
 
             // REWORK SHUNTING ALGORITHM
             // for (int i = 0; i < expr; i++) {
@@ -543,8 +534,6 @@ private:
             // }
             return expr;
         }
-
-
     void buildInput() {
         tokitr++, lexitr++; //move past input
         tokitr++, lexitr++; //move past lparen
@@ -568,6 +557,7 @@ private:
         tokitr++, lexitr++; //rparen
     }
 
+    Expr *buildExpr();
 
     // headers for populate methods may not change
     void populateTokenLexemes(istream &infile) {
