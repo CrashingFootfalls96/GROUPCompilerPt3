@@ -634,7 +634,7 @@ private:
         } else {
             if (*tokitr == "t_text" || (*tokitr == "t_id" && symboltable[*tokitr] == "t_string")) {
                 StringPostFixExpr *expr = new StringPostFixExpr();
-                while (*tokitr != "s_semi" || *tokitr != "s_rparen") {
+                while (*tokitr != "s_semi" && *tokitr != "s_rparen") {
                     if (!isOperator(*lexitr)) {
                         expr->addTerm(*lexitr, *tokitr);
                         tokitr++, lexitr++;
@@ -655,12 +655,12 @@ private:
                 return expr;
             } else {
                 IntPostFixExpr *expr = new IntPostFixExpr();
-                while (*tokitr != "s_semi" || *tokitr != "s_rparen") {
+                while (*tokitr != "s_semi" && *tokitr != "s_rparen") {
                     if (!isOperator(*lexitr)) {
                         expr->addTerm(*lexitr);
                         tokitr++, lexitr++;
                     } else {
-                        while (!operStk.empty() && precMap[operStk.top()] <= precMap[*lexitr]) {
+                        while (!operStk.empty() && (precMap[operStk.top()] <= precMap[*lexitr])) {
                             expr->addTerm(operStk.top());
                             operStk.pop();
                             tokitr++, lexitr++;
