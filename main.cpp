@@ -642,7 +642,6 @@ private:
                         while (!operStk.empty() && precMap[operStk.top()] <= precMap[*lexitr]) {
                             expr->addTerm(operStk.top(), *tokitr);
                             operStk.pop();
-                            tokitr++, lexitr++;
                         }
                         operStk.push(*lexitr);
                         tokitr++, lexitr++;
@@ -663,11 +662,14 @@ private:
                         while (!operStk.empty() && (precMap[operStk.top()] <= precMap[*lexitr])) {
                             expr->addTerm(operStk.top());
                             operStk.pop();
-                            tokitr++, lexitr++;
                         }
                         operStk.push(*lexitr);
                         tokitr++, lexitr++;
                     }
+                }
+                while (!operStk.empty()) {
+                    expr->addTerm(operStk.top());
+                    operStk.pop();
                 }
                 return expr;
             }
