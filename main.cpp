@@ -76,6 +76,7 @@ int applyOper(int a, int b, string oper){
     if (oper == "!=") return a != b;
     // process a and b according to the value of oper
     // and return result
+    return 0;
 }
 
 class StringConstExpr : public StringExpr {
@@ -162,7 +163,7 @@ public:
         if (!operandStk.empty()) {
             result = operandStk.top();
         }
-        return result;
+        return  new string(result);
     }
 
     string toString() {
@@ -218,6 +219,10 @@ private:
     vector<string> expr;
 
 public:
+    void addTerm(string term) {
+        expr.push_back(term);
+    }
+
     IntPostFixExpr() {
     }
 
@@ -227,12 +232,29 @@ public:
     }
 
     int eval() {
-        stack<string> operatorStk;
-        int finalValue = 0;
-        for (auto i : expr) {
-            if (!isOperator(i)) {
-                operatorStk
+        stack<int> operandStk;
+
+        for (int i = 0; i < expr.size(); i++) {
+            if (!isOperator(expr[i])) {
+                if (symboltable.contains(expr[i])) {
+                    operandStk.push(stoi(symbolvalues[expr[i]]));
+                } else {
+                    operandStk.push(stoi(expr[i]));
+                }
+            } else {
+                if (operandStk.size() >= 2) {
+                    int rhs = operandStk.top(); operandStk.pop();
+                    int lhs = operandStk.top(); operandStk.pop();
+
+                    int result = applyOper(lhs, rhs, expr[i]);
+                    operandStk.push(result);
+                }
             }
+        }
+        if (operandStk.empty()) {
+            return 0;
+        } else {
+            return operandStk.top();
         }
     }
 
@@ -630,16 +652,27 @@ private:
                     expr->addTerm(operStk.top(), *tokitr);
                     operStk.pop();
                 }
+                return expr;
             } else {
                 IntPostFixExpr *expr = new IntPostFixExpr();
                 while (*tokitr != "s_semi" || *tokitr != "s_rparen") {
                     if (!isOperator(*lexitr)) {
-                        expr->addTerm(*lexitr, *tokitr);
+                        expr->addTerm(*lexitr);
+                        tokitr++, lexitr++;
+                    } else {
+                        while (!operStk.empty() && precMap[operStk.top()] <= precMap[*lexitr]) {
+                            expr->addTerm(operStk.top());
+                            operStk.pop();
+                            tokitr++, lexitr++;
+                        }
+                        operStk.push(*lexitr);
+                        tokitr++, lexitr++;
                     }
                 }
+                return expr;
             }
         }
-            return expr;
+        return expr;
     }
 
     void buildInput() {
