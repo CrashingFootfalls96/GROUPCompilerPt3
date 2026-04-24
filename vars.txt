@@ -1,3 +1,0 @@
-age t_integer
-name t_string
-greeting t_string

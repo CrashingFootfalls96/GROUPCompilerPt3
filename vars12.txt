@@ -1,2 +1,0 @@
-uninit_int t_integer
-uninit_str t_string

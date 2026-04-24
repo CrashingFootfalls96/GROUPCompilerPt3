@@ -1,4 +1,0 @@
-val1 t_integer
-val2 t_integer
-eq_flag t_integer
-ne_flag t_integer

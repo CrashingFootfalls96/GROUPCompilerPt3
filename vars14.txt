@@ -1,5 +1,0 @@
-a t_integer
-b t_integer
-c t_integer
-d t_integer
-success t_integer

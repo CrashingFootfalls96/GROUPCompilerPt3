@@ -1,2 +1,0 @@
-user_input t_string
-match_found t_integer

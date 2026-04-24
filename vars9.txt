@@ -1,9 +1,0 @@
-s1 t_string
-s2 t_string
-s3 t_string
-eq_f t_integer
-ne_f t_integer
-lt_f t_integer
-gt_f t_integer
-le_f t_integer
-ge_f t_integer

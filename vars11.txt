@@ -1,3 +1,0 @@
-truth_hello t_integer
-truth_null t_integer
-truth_empty t_integer

@@ -1,2 +1,0 @@
-num t_integer
-zero t_integer
