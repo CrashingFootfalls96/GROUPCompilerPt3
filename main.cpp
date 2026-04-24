@@ -620,7 +620,6 @@ private:
         Expr *expr;
         stack<string> operStk;
 
-        tokitr++, lexitr++;
         if (peek("s_semi") || peek("s_rparen")) {
             if (*tokitr == "t_number") {
                 expr = new IntConstExpr(stoi(*lexitr));
@@ -631,6 +630,7 @@ private:
             } else {
                 expr = new StringIDExpr(*lexitr);
             }
+            tokitr++, lexitr++;
         } else {
             if (*tokitr == "t_text" || (*tokitr == "t_id" && symboltable[*tokitr] == "t_string")) {
                 StringPostFixExpr *expr = new StringPostFixExpr();
