@@ -795,8 +795,8 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data3.txt");
-    ifstream symbols("vars3.txt");
+    ifstream source("data.txt");
+    ifstream symbols("vars.txt");
     if (!source || !symbols) exit(-1);
     Compiler c(source, symbols);
     c.compile();
