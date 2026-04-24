@@ -1,0 +1,6 @@
+a t_integer
+b t_integer
+lt_flag t_integer
+gt_flag t_integer
+le_flag t_integer
+ge_flag t_integer
