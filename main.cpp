@@ -208,7 +208,12 @@ public:
 
     int eval() {
         string valueStr = symbolvalues[id];
-        return stoi(valueStr);
+        try {
+            return stoi(valueStr);
+        } catch (const std::invalid_argument& e) {
+            cerr << "Error: Cannot convert to an integer! 1" << endl;
+            throw;
+        }
     }
 
     string toString() { return id; }
@@ -237,9 +242,20 @@ public:
         for (int i = 0; i < expr.size(); i++) {
             if (!isOperator(expr[i])) {
                 if (symboltable.contains(expr[i])) {
-                    operandStk.push(stoi(symbolvalues[expr[i]]));
+                    try {
+                        operandStk.push(stoi(symbolvalues[expr[i]]));
+                    } catch (const std::invalid_argument& e) {
+                        cerr << "Error: Cannot convert '" << expr[i] << "' to an integer! 2" << endl;
+                        throw;
+                    }
                 } else {
+                    try {
                     operandStk.push(stoi(expr[i]));
+                    }
+                    catch (const std::invalid_argument& e) {
+                        cerr << "Error: Cannot convert '" << expr[i] << "' to an integer! 3" << endl;
+                        throw;
+                    }
                 }
             } else {
                 if (operandStk.size() >= 2) {
@@ -622,7 +638,12 @@ private:
 
         if (peek("s_semi") || peek("s_rparen")) {
             if (*tokitr == "t_number") {
-                expr = new IntConstExpr(stoi(*lexitr));
+                try {
+                    expr = new IntConstExpr(stoi(*lexitr));
+                } catch (const std::invalid_argument& e) {
+                    cerr << "Error: Cannot convert to an integer! 4" << endl;
+                    throw;
+                }
             } else if (*tokitr == "t_text") {
                 expr = new StringConstExpr(*lexitr);
             } else if (*tokitr == "t_id" && symboltable[*tokitr] == "t_integer") {
@@ -690,8 +711,14 @@ private:
         tokitr++, lexitr++; //output
         tokitr++, lexitr++; //lparen
         if (symboltable[*lexitr] == "t_integer") {
-            IntOutStmt* ios = new IntOutStmt(stoi(*lexitr));
-            insttable.push_back(ios);
+            try {
+                cout << *lexitr << endl;
+                IntOutStmt* ios = new IntOutStmt(stoi(*lexitr));
+                insttable.push_back(ios);
+            } catch (const std::invalid_argument& e) {
+                cerr << "Error: Cannot convert to an integer! 5" << endl;
+                throw;
+            }
         } else if (symboltable[*lexitr] == "t_string") {
             StrOutStmt* sos = new StrOutStmt(*lexitr);
             insttable.push_back(sos);
@@ -795,11 +822,12 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data.txt");
-    ifstream symbols("vars.txt");
+    ifstream source("datasimple.txt");
+    ifstream symbols("varssimple.txt");
     if (!source || !symbols) exit(-1);
     Compiler c(source, symbols);
     c.compile();
+    dump();
     // might want to call dump to check if everything built correctly
     // dump();
     c.run();
