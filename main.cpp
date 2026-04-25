@@ -278,7 +278,8 @@ public:
 
     virtual void execute() = 0;
 
-    virtual void setName(string inName){
+    void setName(string inName){
+        name = inName;
     }
 };
 
@@ -795,8 +796,8 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data.txt");
-    ifstream symbols("vars.txt");
+    ifstream source("data1.txt");
+    ifstream symbols("vars1.txt");
     if (!source || !symbols) exit(-1);
     Compiler c(source, symbols);
     c.compile();
