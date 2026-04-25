@@ -41,8 +41,6 @@ public:
 
     virtual ~Expr() {
     }
-
-    void addTerm(const vector<string>::iterator::value_type & lexitr, const vector<string>::iterator::value_type & tokitr);
 };
 
 class StringExpr : public Expr {
@@ -56,10 +54,7 @@ public:
 };
 
 bool isOperator(string term){
-    // helper func
-    if (term == "+" || term == "-" || term == "/" || term == "*" || term == "%")
-        return true;
-    return false;
+    return precMap.count(term) > 0; //BUG: previously did not check for relational operators, now checks if operator exists in map which should contain all of them
 }
 
 int applyOper(int a, int b, string oper){
@@ -283,7 +278,8 @@ public:
 
     virtual void execute() = 0;
 
-    virtual void setName(string inName){
+    void setName(string inName){
+        name = inName;
     }
 };
 
@@ -564,20 +560,18 @@ private:
     }
 
     void buildIf() {
-        int ifIdx = pc;
         tokitr++, lexitr++; //move past if
-        tokitr++, lexitr++; //move past lparen
-        IfStmt* istmt = new IfStmt(buildExpr());
+        IfStmt* istmt = new IfStmt(buildExpr()); //BUG: previously incremented twice when buildExpr also increments, causing extra iteration
         insttable.push_back(istmt);
         tokitr++, lexitr++; //move past rparen
         tokitr++, lexitr++; //move past then
-        while (*tokitr != "t_end" && *tokitr != "t_else") {
+        while (*tokitr != "t_end" && *tokitr != "t_else") { //BUG: previously was an or check (||) causing an infinite loop when building if statements
             buildStmt();
         }
         if (*tokitr == "t_else") {
             GoToStmt* gtstmt = new GoToStmt();
             insttable.push_back(gtstmt);
-            istmt->setElseTarget(pc);
+            istmt->setElseTarget(insttable.size()); //BUG: previously was using the current program counter which didn't match the location of the next instruction after else
             tokitr++, lexitr++; // skip else
             while (*tokitr != "t_end") {
                 buildStmt();
@@ -592,8 +586,8 @@ private:
 
     void buildWhile() {
         tokitr++, lexitr++; //move past while
-        tokitr++, lexitr++; //move past lparen
-        int whileIdx = pc;
+        //BUG: previously incremented twice when buildExpr also increments, causing extra iteration
+        int whileIdx = insttable.size(); //BUG: previously set to current program counter, set to correct instruction element to return to
         WhileStmt* wstmt = new WhileStmt(buildExpr());
         insttable.push_back(wstmt);
         tokitr++, lexitr++; //move past rparen
@@ -601,19 +595,20 @@ private:
         while (*tokitr != "t_end") {
             buildStmt();
         }
-        wstmt->setElseTarget(insttable.size());
-        GoToStmt* gtstmt = new GoToStmt();
+        GoToStmt* gtstmt = new GoToStmt(); //BUG: previously set elsetarget before creating goto and pushing instruction, causing goto to loop and return to itself
         gtstmt->setTarget(whileIdx);
         insttable.push_back(gtstmt);
+        wstmt->setElseTarget(insttable.size());
         tokitr++, lexitr++; //move past end
         tokitr++, lexitr++; //move past loop
     }
 
-    void buildAssign() {
+    void buildAssign() { //BUG: method was missing increments and pushback to instruction table
         string id = *lexitr;
-        AssignStmt* asstmt = new AssignStmt(id, buildExpr());
+        tokitr++, lexitr++;  // move past t_id
+        AssignStmt* asstmt = new AssignStmt(id, buildExpr()); //BUG: previously incremented twice when buildExpr also increments, causing extra iteration
         insttable.push_back(asstmt);
-        tokitr++, lexitr++; //skip semi
+        tokitr++, lexitr++;  // skip semi
     }
 
     Expr *buildExpr() {
@@ -627,13 +622,14 @@ private:
                 expr = new IntConstExpr(stoi(*lexitr));
             } else if (*tokitr == "t_text") {
                 expr = new StringConstExpr(*lexitr);
-            } else if (*tokitr == "t_id" && symboltable[*tokitr] == "t_integer") {
+            } else if (*tokitr == "t_id" && symboltable[*lexitr] == "t_integer") { //BUG: symboltable lookup used *tokitr as key instead of *lexitr
                 expr = new IntIDExpr(*lexitr);
             } else {
                 expr = new StringIDExpr(*lexitr);
             }
+            tokitr++, lexitr++; //BUG: buildStmt previously stuck on s_semi without handling, added increment
         } else {
-            if (*tokitr == "t_text" || (*tokitr == "t_id" && symboltable[*tokitr] == "t_string")) {
+            if (*tokitr == "t_text" || (*tokitr == "t_id" && symboltable[*lexitr] == "t_string")) { //BUG: symboltable lookup used *tokitr as key instead of *lexitr
                 StringPostFixExpr *expr = new StringPostFixExpr();
                 while (*tokitr != "s_semi" && *tokitr != "s_rparen") {
                     if (!isOperator(*lexitr)) {
@@ -687,18 +683,20 @@ private:
         tokitr++, lexitr++; //move past rparen
     }
 
-    void buildOutput() {
-        tokitr++, lexitr++; //output
-        tokitr++, lexitr++; //lparen
-        if (symboltable[*lexitr] == "t_integer") {
-            IntOutStmt* ios = new IntOutStmt(stoi(*lexitr));
-            insttable.push_back(ios);
-        } else if (symboltable[*lexitr] == "t_string") {
-            StrOutStmt* sos = new StrOutStmt(*lexitr);
-            insttable.push_back(sos);
+    void buildOutput() { //BUG: previously checked incorrect tokens and used them to construct output statements, now checks for number/text and uses it for output
+        tokitr++, lexitr++; // output
+        tokitr++, lexitr++; // lparen
+        if (*tokitr == "t_number") {
+            insttable.push_back(new IntOutStmt(stoi(*lexitr)));
         }
-        tokitr++, lexitr++; //var
-        tokitr++, lexitr++; //rparen
+        else if (*tokitr == "t_text") {
+            insttable.push_back(new StrOutStmt(*lexitr));
+        }
+        else {
+            insttable.push_back(new IDOutStmt(*lexitr));
+        }
+        tokitr++, lexitr++; // var
+        tokitr++, lexitr++; // rparen
     }
 
     // headers for populate methods may not change
@@ -741,10 +739,12 @@ public:
     }
 
     // headers may not change
-    Compiler(istream &source, istream &symbols) {
+    Compiler(istream &source, istream &symbols) { //BUG: missing == and != operators
         // build precMap - include logical, relational, arithmetic operators
         precMap["and"] = 3;
         precMap["or"] = 3;
+        precMap["=="] = 3;
+        precMap["!="] = 3;
         precMap["<="] = 3;
         precMap[">="] = 3;
         precMap[">"] = 3;
@@ -766,7 +766,7 @@ public:
             tokitr++, lexitr++; //pass all vars before main
         }
         tokitr++, lexitr++; //pass main
-        while (tokitr != tokens.end()) {
+        while (tokitr != tokens.end() && *tokitr != "t_end") { //BUG: previously did not handle t_end causing infinite loop
             buildStmt();
         }
         //Compiles correctly only when there are no logical errors
@@ -797,14 +797,13 @@ void dump() {
 
 
 int main() {
-     ifstream source("data1.txt");
-     ifstream symbols("vars1.txt");
-     if (!source || !symbols) exit(-1);
-     Compiler c(source, symbols);
-     c.compile();
-     // might want to call dump to check if everything built correctly
-     dump();
-     c.run();
-     return 0;
-
+    ifstream source("data1.txt");
+    ifstream symbols("vars1.txt");
+    if (!source || !symbols) exit(-1);
+    Compiler c(source, symbols);
+    c.compile();
+    // might want to call dump to check if everything built correctly
+    dump();
+    c.run();
+    return 0;
 }
