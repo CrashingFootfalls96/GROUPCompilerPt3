@@ -489,7 +489,7 @@ private:
         insttable.push_back(istmt);
         tokitr++, lexitr++; //move past rparen
         tokitr++, lexitr++; //move past then
-        while (*tokitr != "t_end" || *tokitr != "t_else") {
+        while (*tokitr != "t_end" && *tokitr != "t_else") {
             buildStmt();
         }
         if (*tokitr == "t_else") {
@@ -530,6 +530,7 @@ private:
     void buildAssign() {
         string id = *lexitr;
         AssignStmt* asstmt = new AssignStmt(id, buildExpr());
+        insttable.push_back(asstmt);
         tokitr++, lexitr++; //skip semi
     }
 
