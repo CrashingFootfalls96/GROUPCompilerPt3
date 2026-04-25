@@ -29,7 +29,7 @@ s_gt >
 t_number 20
 s_rparen )
 t_then then
-t_out output
+t_output output
 s_lparen (
 t_id greeting
 s_rparen )

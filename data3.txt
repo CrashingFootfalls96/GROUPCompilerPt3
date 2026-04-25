@@ -19,7 +19,7 @@ t_id num
 s_div /
 t_id zero
 s_semi ;
-t_out output
+t_output output
 s_lparen (
 t_id num
 s_rparen )

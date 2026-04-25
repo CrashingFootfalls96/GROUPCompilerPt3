@@ -794,14 +794,16 @@ void dump() {
     }
 }
 
+
 int main() {
-    ifstream source("data.txt");
-    ifstream symbols("vars.txt");
-    if (!source || !symbols) exit(-1);
-    Compiler c(source, symbols);
-    c.compile();
-    // might want to call dump to check if everything built correctly
-    // dump();
-    c.run();
-    return 0;
+     ifstream source("data1.txt");
+     ifstream symbols("vars1.txt");
+     if (!source || !symbols) exit(-1);
+     Compiler c(source, symbols);
+     c.compile();
+     // might want to call dump to check if everything built correctly
+     dump();
+     c.run();
+     return 0;
+
 }

@@ -53,7 +53,7 @@ s_gt >
 t_id last
 s_rparen )
 t_then then
-t_out output
+t_output output
 s_lparen (
 t_id full
 s_rparen )
