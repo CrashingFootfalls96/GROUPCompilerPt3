@@ -621,7 +621,8 @@ private:
         Expr *expr;
         stack<string> operStk;
 
-        tokitr++, lexitr++;
+
+        tokitr++, lexitr++; //BUG: Token is currently s_assign here
         if (peek("s_semi") || peek("s_rparen")) {
             if (*tokitr == "t_number") {
                 expr = new IntConstExpr(stoi(*lexitr));
