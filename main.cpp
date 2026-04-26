@@ -12,7 +12,7 @@ using namespace std;
 
 class Expr;
 class Stmt;
-
+void dump();
 int pc;
 vector<string> lexemes;
 vector<string> tokens;
@@ -738,6 +738,7 @@ public:
     void run() {
         pc = 0;
         while (pc < insttable.size()) {
+            dump();
             insttable[pc]->execute();
         }
     }
