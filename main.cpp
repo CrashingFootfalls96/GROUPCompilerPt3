@@ -688,7 +688,8 @@ private:
             int spacePos = line.find(' ');
             id = line.substr(0, spacePos);
             type = line.substr(spacePos + 1);
-            symboltable.insert(make_pair(id, type));
+
+            symboltable[id] = type;
         }
     }
 
