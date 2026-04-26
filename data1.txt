@@ -12,6 +12,6 @@ t_number 25
 s_semi ;
 t_id myName
 s_assign =
-t_text "Adam"
+t_text Adam
 s_semi ;
 t_end end

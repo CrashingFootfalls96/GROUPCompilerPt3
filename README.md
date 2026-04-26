@@ -77,3 +77,6 @@ It tests that the compiler can handle a nested if statements with the use of and
 This test has five variables, a, b, c, d, and fail_check.
 It tests that and & or expressions in if statements fail correctly.
 
+17. data16/vars16
+This test has one variable named loopVar.
+It tests that an infinite loop is not resolved by the compiler. 

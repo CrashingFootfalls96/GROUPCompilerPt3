@@ -21,7 +21,7 @@ t_number 0
 s_semi ;
 t_if if
 s_lparen (
-t_text "hello"
+t_text hello
 s_rparen )
 t_then then
 t_id truth_hello
@@ -32,9 +32,9 @@ t_end end
 t_if if
 t_if if
 s_lparen (
-t_text "Hello"
+t_text Hello
 s_eq ==
-t_text "World"
+t_text World
 s_rparen )
 t_then then
 t_id truth_null
@@ -45,7 +45,7 @@ t_end end
 t_if if
 t_if if
 s_lparen (
-t_text ""
+t_text 
 s_rparen )
 t_then then
 t_id truth_empty
