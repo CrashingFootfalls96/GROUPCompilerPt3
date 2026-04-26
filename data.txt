@@ -14,11 +14,11 @@ t_number 22
 s_semi ;
 t_id name
 s_assign =
-t_text "Adam"
+t_text Adam
 s_semi ;
 t_id greeting
 s_assign =
-t_text "Hello "
+t_text Hello 
 s_plus +
 t_id name
 s_semi ;
