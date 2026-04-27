@@ -40,7 +40,7 @@ public:
 };
 
 bool isOperator(string term) {
-    return precMap.count(term) > 0;
+    return precMap.contains(term);
 }
 
 int applyOper(int a, int b, string oper) {
@@ -112,7 +112,7 @@ public:
         for (const string& token : expr) {
             if (!isOperator(token)) {
                 if (symboltable.contains(token)) {
-                    if (!symbolvalues.count(token)) {
+                    if (!symbolvalues.contains(token)) {
                         return nullptr;
                     }
                     operandStk.push(symbolvalues[token]);
