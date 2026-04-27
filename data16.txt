@@ -13,9 +13,11 @@ t_id loopVar
 s_gt >
 t_number 0
 s_rparen )
-t_then then
+t_loop loop
 t_output output
 s_lparen (
 t_id loopVar
 s_rparen )
+t_end end
+t_loop loop
 t_end end

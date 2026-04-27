@@ -5,7 +5,8 @@ It tests if the compiler can handle string concatenation, if statements with var
 
 2. data1/vars1
 
-This test has two variables, myAge and myName. It tests that AssignStmt can handle literal integers and strings, 
+This test has two variables, myAge and myName. 
+It tests that AssignStmt can handle literal integers and strings, 
 
 3. data2/vars2
 
@@ -80,3 +81,15 @@ It tests that and & or expressions in if statements fail correctly.
 17. data16/vars16
 This test has one variable named loopVar.
 It tests that an infinite loop is not resolved by the compiler. 
+
+18. data17/vars17
+This test has one variable named state.
+It tests that else works correctly and false while loops. 
+
+19. data18/vars18
+This test has three variables, numStr1, numStr2, and resultStr.
+It tests that numbers can be treated as text.
+
+20. data19/vars19
+This test has three variables, a, b and c.
+It test that while loops will repeat until a given condition, else statement can be skipped, 

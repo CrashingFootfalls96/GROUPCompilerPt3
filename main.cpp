@@ -757,8 +757,8 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data.txt");
-    ifstream symbols("vars.txt");
+    ifstream source("data19.txt");
+    ifstream symbols("vars19.txt");
     if (!source || !symbols) {
         exit(-1);
     }
@@ -766,5 +766,7 @@ int main() {
     c.compile();
     dump();
     c.run();
+    cout << endl << "Last Dump" << endl;
+    dump();
     return 0;
 }

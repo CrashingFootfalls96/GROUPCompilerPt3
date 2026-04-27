@@ -1,0 +1,3 @@
+a t_integer
+b t_integer
+c t_integer

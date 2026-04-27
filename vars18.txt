@@ -1,0 +1,3 @@
+numStr1 t_string
+numStr2 t_string
+resultStr t_string

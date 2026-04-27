@@ -42,14 +42,14 @@ t_id full
 s_assign =
 t_id first
 s_plus +
-t_text  
+t_text  +
 s_plus +
 t_id last
 s_semi ;
 t_if if
 s_lparen (
 t_id first
-s_gt >
+s_lt <
 t_id last
 s_rparen )
 t_then then
