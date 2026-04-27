@@ -820,15 +820,13 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data16.txt");
-    ifstream symbols("vars16.txt");
+    ifstream source("data.txt");
+    ifstream symbols("vars.txt");
     if (!source || !symbols) {
         exit(-1);
     }
     Compiler c(source, symbols);
     c.compile();
     c.run();
-    cout << endl << "Last Dump" << endl;
-    dump();
     return 0;
 }
