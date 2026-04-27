@@ -757,8 +757,8 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data19.txt");
-    ifstream symbols("vars19.txt");
+    ifstream source("data9.txt");
+    ifstream symbols("vars9.txt");
     if (!source || !symbols) {
         exit(-1);
     }

@@ -92,4 +92,4 @@ It tests that numbers can be treated as text.
 
 20. data19/vars19
 This test has three variables, a, b and c.
-It test that while loops will repeat until a given condition, else statement can be skipped, 
+It tests that while loops will repeat until a given condition, else statements use goto efficiently, and 
