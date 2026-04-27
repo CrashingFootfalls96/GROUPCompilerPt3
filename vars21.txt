@@ -1,0 +1,3 @@
+apple t_string
+orange t_string
+num t_integer

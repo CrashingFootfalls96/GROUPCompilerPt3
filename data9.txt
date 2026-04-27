@@ -108,6 +108,10 @@ t_id ge_f
 s_assign =
 t_number 1
 s_semi ;
+t_output output
+s_lparen (
+t_number 100
+s_rparen )
 t_end end
 t_if if
 t_end end

@@ -42,6 +42,6 @@ t_id state
 s_assign =
 t_text on
 s_plus +
-t_text  +
+t_text +off
 s_semi ;
 t_end end

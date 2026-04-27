@@ -738,7 +738,6 @@ public:
     void run() {
         pc = 0;
         while (pc < insttable.size()) {
-            dump();
             insttable[pc]->execute();
         }
     }
@@ -757,14 +756,13 @@ void dump() {
 }
 
 int main() {
-    ifstream source("data9.txt");
-    ifstream symbols("vars9.txt");
+    ifstream source("data16.txt");
+    ifstream symbols("vars16.txt");
     if (!source || !symbols) {
         exit(-1);
     }
     Compiler c(source, symbols);
     c.compile();
-    dump();
     c.run();
     cout << endl << "Last Dump" << endl;
     dump();

@@ -46,17 +46,17 @@ It tests the not equals and equals operator for integers.
 10. data9/vars9
 
 This test has 3 string variables and 5 flags.
-It tests all relational operators with strings.
+It tests all relational operators with strings and outputs a number.
 
 11. data10/vars10
 
 This test has two variables, i and target_found.
-It tests that a if statement executes in a while loop.
+It tests that an if statement executes in a while loop.
 
 12. data11/vars11
 
 This test has 3 variables that act as flags.
-It tests that empty and non empty strings return true and that null pointer return false. 
+It tests that empty and non-empty strings return true and that null pointer return false. 
 
 13. data12/vars12
 
@@ -91,5 +91,13 @@ This test has three variables, numStr1, numStr2, and resultStr.
 It tests that numbers can be treated as text.
 
 20. data19/vars19
-This test has three variables, a, b and c.
-It tests that while loops will repeat until a given condition, else statements use goto efficiently, and 
+This test has three variables, a, b, and c.
+It tests that while loops will repeat until a given condition and else statements use goto correctly.
+
+21. data20/vars20
+This test has three variables, a, b, and s1.
+It tests that variables can be used in conjunction with const statements in if statements.
+
+22. data21/vars21
+This test has 3 variables, apple, orange, and num.
+It tests that it is not possible to compare the length of strings with numbers. 
