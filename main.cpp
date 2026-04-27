@@ -67,10 +67,13 @@ public:
     StringConstExpr(string val) {
         value = val;
     }
+
     ~StringConstExpr() {}
+
     string eval() {
         return value;
     }
+
     string toString() {
         return value;
     }
@@ -83,10 +86,13 @@ public:
     StringIDExpr(string val) {
         id = val;
     }
+
     ~StringIDExpr() {}
+
     string eval() {
         return symbolvalues[id];
     }
+
     string toString() {
         return id;
     }
@@ -101,12 +107,15 @@ public:
         expr.push_back(term);
         exprtoks.push_back(tok);
     }
+
     StringPostFixExpr() {}
+
     StringPostFixExpr(string x, string t) {
         expr.push_back(x);
         exprtoks.push_back(t);
     }
     ~StringPostFixExpr() {}
+
     string *eval() {
         stack<string> operandStk;
         for (const string& token : expr) {
@@ -154,6 +163,7 @@ public:
         }
         return new string(operandStk.top());
     }
+
     string toString() {
         string exprConcat = "";
         for (int i = 0; i < expr.size(); i++) {
@@ -173,10 +183,13 @@ public:
     IntConstExpr(int val) {
         value = val;
     }
+
     ~IntConstExpr() {}
+
     int eval() {
         return value;
     }
+
     string toString() {
         return to_string(value);
     }
@@ -189,11 +202,15 @@ public:
     IntIDExpr(string val) {
         id = val;
     }
+
     ~IntIDExpr() {}
+
     int eval() {
         string valueStr = symbolvalues[id];
+        if (valueStr.empty()) { return 0; }
         return stoi(valueStr);
     }
+
     string toString() {
         return id;
     }
@@ -206,11 +223,15 @@ public:
     void addTerm(string term) {
         expr.push_back(term);
     }
+
     IntPostFixExpr() {}
+
     IntPostFixExpr(string x) {
         expr.push_back(x);
     }
+
     ~IntPostFixExpr() {}
+
     int eval() {
         stack<int> operandStk;
         for (int i = 0; i < expr.size(); i++) {
@@ -235,6 +256,7 @@ public:
             return operandStk.top();
         }
     }
+
     string toString() {
         string stringBuilder = "";
         for (int i = 0; i < expr.size(); i++) {
@@ -270,17 +292,21 @@ public:
         var = "";
         p_expr = nullptr;
     }
+
     AssignStmt(string inVar, Expr *inExpr) {
         setName("t_assign");
         var = inVar;
         p_expr = inExpr;
     }
+
     ~AssignStmt() {
         delete p_expr;
     }
+
     string toString() {
         return var + " = " + p_expr->toString();
     }
+
     void execute() {
         IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
         if (i_expr) {
@@ -309,14 +335,18 @@ public:
         setName("t_input");
         var = "";
     }
+
     InputStmt(string inVar) {
         setName("t_input");
         var = inVar;
     }
+
     ~InputStmt() {}
+
     string toString() {
         return "input(" + var + ")";
     }
+
     void execute() {
         string input;
         cout << "input value for variable: " + var << endl;
@@ -334,14 +364,18 @@ public:
         setName("t_output");
         value = "";
     }
+
     StrOutStmt(string inValue) {
         setName("t_output");
         value = inValue;
     }
+
     ~StrOutStmt() {}
+
     string toString() {
         return "output(" + value + ")";
     }
+
     void execute() {
         cout << value << endl;
         pc++;
@@ -356,14 +390,18 @@ public:
         setName("t_output");
         value = 0;
     }
+
     IntOutStmt(int inValue) {
         setName("t_output");
         value = inValue;
     }
+
     ~IntOutStmt() {}
+
     string toString() {
         return "output(" + to_string(value) + ")";
     }
+
     void execute() {
         cout << value << endl;
         pc++;
@@ -378,16 +416,24 @@ public:
         setName("t_output");
         var = "";
     }
+
     IDOutStmt(string inVar) {
         setName("t_output");
         var = inVar;
     }
+
     ~IDOutStmt() {}
+
     string toString() {
         return "output(" + var + ")";
     }
+
     void execute() {
-        cout << symbolvalues[var] << endl;
+        if (symbolvalues.contains(var)) {
+            cout << symbolvalues[var] << endl;
+        } else {
+            cout << "" << endl;
+        }
         pc++;
     }
 };
@@ -402,17 +448,21 @@ public:
         p_expr = nullptr;
         elsetarget = -1;
     }
+
     IfStmt(Expr *inExpr) {
         setName("t_if");
         p_expr = inExpr;
         elsetarget = -1;
     }
+
     ~IfStmt() {
         delete p_expr;
     }
+
     string toString() {
         return "if " + p_expr->toString() + " else target: " + to_string(elsetarget);
     }
+
     void execute() {
         IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
         if (i_expr) {
@@ -437,6 +487,7 @@ public:
             }
         }
     }
+
     void setElseTarget(int inTarget) {
         elsetarget = inTarget;
     }
@@ -452,17 +503,21 @@ public:
         p_expr = nullptr;
         elsetarget = -1;
     }
+
     WhileStmt(Expr *inExpr) {
         setName("t_while");
         p_expr = inExpr;
         elsetarget = -1;
     }
+
     ~WhileStmt() {
         delete p_expr;
     }
+
     string toString() {
         return "while " + p_expr->toString() + " else target: " + to_string(elsetarget);
     }
+
     void execute() {
         IntExpr *i_expr = dynamic_cast<IntExpr *>(p_expr);
         if (i_expr) {
@@ -487,6 +542,7 @@ public:
             }
         }
     }
+
     void setElseTarget(int inTarget) {
         elsetarget = inTarget;
     }
@@ -500,13 +556,17 @@ public:
         setName("t_goto");
         target = -1;
     }
+
     ~GoToStmt() {}
+
     void setTarget(int inTarget) {
         target = inTarget;
     }
+
     string toString() {
         return "goto: " + to_string(target);
     }
+
     void execute() {
         pc = target;
     }
@@ -688,8 +748,12 @@ private:
             int spacePos = line.find(' ');
             id = line.substr(0, spacePos);
             type = line.substr(spacePos + 1);
-
             symboltable[id] = type;
+            if (type == "t_integer") {
+                symbolvalues[id] = "0";
+            } else {
+                symbolvalues[id] = "";
+            }
         }
     }
 
